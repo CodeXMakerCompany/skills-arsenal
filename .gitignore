@@ -1,0 +1,26 @@
+# Secrets — never commit credentials into a skills repo
+.env
+.env.*
+*.key
+*.pem
+credentials.json
+secrets.*
+
+# Local-only skills (prefix a directory with _ to keep it off the remote)
+_*/
+
+# Scratch / generated output
+scratch/
+tmp/
+out/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp

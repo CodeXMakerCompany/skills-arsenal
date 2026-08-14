@@ -1,0 +1,4 @@
+# Normalize line endings — this repo syncs across Windows / macOS / Linux.
+# Without this, cloning on a different OS produces whole-file spurious diffs.
+* text=auto eol=lf
+*.md text eol=lf
