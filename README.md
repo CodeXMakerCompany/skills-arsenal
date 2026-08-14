@@ -10,6 +10,7 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | Skill | Purpose |
 |-------|---------|
 | [`topic-miner`](topic-miner/SKILL.md) | Mine recent AI news for short-form technical video topics with a senior engineering angle. Outputs scored topics in Spanish. |
+| [`stack-scout`](stack-scout/SKILL.md) | Scout tools for a need or painpoint, model real cost at your scale, decide build vs buy. Produces a sequenced build strategy when nothing fits. |
 
 ## Install on a new machine
 
