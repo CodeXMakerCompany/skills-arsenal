@@ -14,6 +14,9 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`anti-slop`](anti-slop/SKILL.md) | Quality gate for Spanish short-form scripts. Kills generic AI phrasing at word, rhythm and structure level, enforces the spoken word budget, returns a ships/doesn't-ship verdict. |
 | [`exam-dumps`](exam-dumps/SKILL.md) | Drive the local Free-Exam-Dumps scraper: list ExamTopics certifications with descriptions, scrape the selected one, loop. Maps outputs and the two upstream breakages. |
 | [`audio-clone`](audio-clone/SKILL.md) | Generate speech from text with the user's own fish.audio cloned voices. Lists My Voices, renders the chosen one to mp3, loops. Token from `.env`. |
+| [`demo-video`](demo-video/SKILL.md) | Demo videos that explain one functionality: problem, the single move, the proof. Always gates on an approved scene script with labels, then drives the HyperFrames CLI to render. |
+| [`script-qa`](script-qa/SKILL.md) | Storyboard for a QA walkthrough: preconditions, one step per frame, each with its expected result and how failure looks. Covers features, bug-fix verification, regression and boundary cases. |
+| [`script-stakeholder`](script-stakeholder/SKILL.md) | Storyboard for product owners and stakeholders: before, the moment, after, what it means, the limit. Strips all technical detail and swaps jargon for outcomes. |
 | [`notebook-cast`](notebook-cast/SKILL.md) | Group sources into a Gemini Notebook and fire a generation — podcast by default, plus video, reports, quizzes, slides. Async: reports the artifact id, never waits. |
 | [`aws-log-insights`](aws-log-insights/SKILL.md) | Forensic RCA on AWS logs: noise filtering, trace ID check, CloudWatch Logs Insights queries, metric filter and alarm. Can scan a root of repos to find a target's log groups. Output in Spanish. |
 
@@ -62,7 +65,7 @@ render on a new machine:
 
 | Needs | Why | Check |
 |-------|-----|-------|
-| Node with `npx` | the CLI runs as `npx hyperframes` | `node --version` |
+| Node 22+ | the CLI runs through the plugin's own launcher, `plugin-cli.mjs` | `node --version` |
 | `ffmpeg` on `PATH` | audio, grading, transcripts and render all shell out to it | `ffmpeg -version` |
 
 ```bash
