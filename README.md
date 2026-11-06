@@ -15,6 +15,7 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`exam-dumps`](exam-dumps/SKILL.md) | Drive the local Free-Exam-Dumps scraper: list ExamTopics certifications with descriptions, scrape the selected one, loop. Maps outputs and the two upstream breakages. |
 | [`audio-clone`](audio-clone/SKILL.md) | Generate speech from text with the user's own fish.audio cloned voices. Lists My Voices, renders the chosen one to mp3, loops. Token from `.env`. |
 | [`notebook-cast`](notebook-cast/SKILL.md) | Group sources into a Gemini Notebook and fire a generation — podcast by default, plus video, reports, quizzes, slides. Async: reports the artifact id, never waits. |
+| [`aws-log-insights`](aws-log-insights/SKILL.md) | Forensic RCA on AWS logs: noise filtering, trace ID check, CloudWatch Logs Insights queries, metric filter and alarm. Can scan a root of repos to find a target's log groups. Output in Spanish. |
 
 ## Install on a new machine
 
