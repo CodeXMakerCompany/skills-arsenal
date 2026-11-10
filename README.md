@@ -20,6 +20,41 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`notebook-cast`](notebook-cast/SKILL.md) | Group sources into a Gemini Notebook and fire a generation — podcast by default, plus video, reports, quizzes, slides. Async: reports the artifact id, never waits. |
 | [`aws-log-insights`](aws-log-insights/SKILL.md) | Forensic RCA on AWS logs: noise filtering, trace ID check, CloudWatch Logs Insights queries, metric filter and alarm. Can scan a root of repos to find a target's log groups. Output in Spanish. |
 
+### 3DModeling
+
+| Skill | Purpose |
+|-------|---------|
+| [`meshy-tripo-3d-pipeline`](3DModeling/meshy-tripo-3d-pipeline/SKILL.md) | AI 3D generation with Meshy and Tripo: input image prep, prompting, API workflow, inspection checklist, cleanup, scale and axis conventions, engine validation. |
+| [`mixamo-auto-rig-mapper`](3DModeling/mixamo-auto-rig-mapper/SKILL.md) | Auto-rig humanoid meshes (Mixamo, Tripo, Meshy), choose the animation set, import and retarget in UE5 with IK Rig and IK Retargeter. |
+
+### Audio
+
+| Skill | Purpose |
+|-------|---------|
+| [`ue-niagara-audio-trigger`](Audio/ue-niagara-audio-trigger/SKILL.md) | Unreal Engine 5 VFX and audio orchestration: tag-driven cues, Niagara parameter driving, MetaSound parameters, pooling, concurrency, networking and dedicated-server guards. |
+| [`elevenlabs-sfx-generator`](Audio/elevenlabs-sfx-generator/SKILL.md) | AI sound effects: prompt structure, ElevenLabs parameters, trimming, loudness targets, layering and variation, engine hand-off. |
+| [`bark-edge-tts-dialogue`](Audio/bark-edge-tts-dialogue/SKILL.md) | Character dialogue with Bark, Edge-TTS and XTTS: line writing, correct Bark tags, voice profiles, batching and caching, loudness, licensing. |
+
+### Graphics2D
+
+| Skill | Purpose |
+|-------|---------|
+| [`sprite-sheet-packer`](Graphics2D/sprite-sheet-packer/SKILL.md) | Pack frames into SubUV flipbooks or trimmed atlases: layout, padding, ImageMagick/Pillow/TexturePacker commands, Niagara SubUV setup, optimization. |
+
+### Development
+
+| Skill | Purpose |
+|-------|---------|
+| [`state-machine-architect`](Development/state-machine-architect/SKILL.md) | Design and implement finite state machines in any language: when to use one, transition tables, hierarchical and parallel variants, async-safe TypeScript reference, anti-patterns, testing. |
+
+### Videogames
+
+| Skill | Purpose |
+|-------|---------|
+| [`ue-character-movement`](Videogames/ue-character-movement/SKILL.md) | Unreal Engine 5 locomotion patterns: CMC setup, custom movement modes, thread-safe AnimInstance data flow, BlendSpaces, root motion, AI and network prediction. C++ and Blueprint. |
+| [`drag-drop-raycaster`](Videogames/drag-drop-raycaster/SKILL.md) | 3D drag-and-drop math: screen-to-world rays, ray-plane intersection, grab offset, frame-rate independent follow, slot snapping. TypeScript/Three.js and Unreal C++. |
+| [`ue-material-instance-builder`](Videogames/ue-material-instance-builder/SKILL.md) | UE5 material instances: MIC vs MID vs Custom Primitive Data vs MPC, parameter contract, C++ runtime driving, Python editor automation, rarity and dissolve techniques. |
+
 ## Install on a new machine
 
 This repo *is* the personal skills directory. Clone it into place:
