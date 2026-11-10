@@ -20,6 +20,9 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`notebook-cast`](notebook-cast/SKILL.md) | Group sources into a Gemini Notebook and fire a generation — podcast by default, plus video, reports, quizzes, slides. Async: reports the artifact id, never waits. |
 | [`aws-log-insights`](aws-log-insights/SKILL.md) | Forensic RCA on AWS logs: noise filtering, trace ID check, CloudWatch Logs Insights queries, metric filter and alarm. Can scan a root of repos to find a target's log groups. Output in Spanish. |
 
+> Working on a specific project? Use [`SKILL-SELECTOR.md`](SKILL-SELECTOR.md): it tells Claude how to
+> pick only the skills a task needs and extract them into the project, with a worked example.
+
 ### 3DModeling
 
 | Skill | Purpose |
