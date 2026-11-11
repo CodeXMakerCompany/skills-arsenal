@@ -70,6 +70,7 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `elevenlabs-sfx-generator` | `Audio/elevenlabs-sfx-generator` | Producing sound effects with AI |
 | `bark-edge-tts-dialogue` | `Audio/bark-edge-tts-dialogue` | Character voice lines / barks with TTS |
 | `ue-niagara-audio-trigger` | `Audio/ue-niagara-audio-trigger` | Triggering Niagara VFX and sound from gameplay events in UE5 |
+| `ue-sfx-pipeline` | `Audio/ue-sfx-pipeline` | Getting a sound file into UE5 and playing it: format, mono, attenuation, concurrency |
 
 ### Game development
 
@@ -79,6 +80,34 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `ue-material-instance-builder` | `Videogames/ue-material-instance-builder` | UE5 material instances, per-item textures, rarity/dissolve FX |
 | `drag-drop-raycaster` | `Videogames/drag-drop-raycaster` | Drag-and-drop in 3D, cursor to world, slot snapping |
 | `state-machine-architect` | `Development/state-machine-architect` | Any phase/mode logic: turns, game flow, AI states, UI flows |
+| `ue-indie-game-setup` | `Videogames/ue-indie-game-setup` | UE5 runs slow, heavyweight template, choosing what to turn off, "indie setup" |
+| `ue-minimal-level-bootstrap` | `Videogames/ue-minimal-level-bootstrap` | Creating a minimal/blank/greybox UE5 level by script, replacing a template level |
+| `ue-3d-architect` | `Videogames/ue-3d-architect` | Starting/structuring a 3D level or game, greyboxing, blockout, spatial metrics, scope layout |
+| `ue-cpp-module-bootstrap` | `Videogames/ue-cpp-module-bootstrap` | Adding C++ to a Blueprint project, builds, forced editor restarts |
+| `ue-enhanced-input-cpp` | `Videogames/ue-enhanced-input-cpp` | Player input in C++, keys that do nothing, WASD + mouse look |
+| `ue-character-import-pipeline` | `Videogames/ue-character-import-pipeline` | Importing a rigged character FBX, broken/sideways/backwards meshes |
+| `ue-third-person-camera` | `Videogames/ue-third-person-camera` | Follow camera, camera-relative movement, camera clipping |
+| `ue-sprint-and-dash` | `Videogames/ue-sprint-and-dash` | Run or sprint key, dash/dodge, foot sliding during locomotion |
+| `ue-actor-spawner` | `Videogames/ue-actor-spawner` | Wave spawner, mob or reward generator, periodic actor spawning |
+| `ue-proximity-reactions` | `Videogames/ue-proximity-reactions` | Pickups highlighting near the player, distance-driven effects |
+| `ue-timers-and-triggers` | `Videogames/ue-timers-and-triggers` | Wave timers, cooldowns, pickups, trigger volumes, overlaps not firing |
+| `ue-canvas-hud` | `Videogames/ue-canvas-hud` | On-screen counters, health bars, countdown rings, a start screen |
+| `ue-procedural-animation` | `Videogames/ue-procedural-animation` | A needed animation clip does not exist; authoring one from the rig |
+| `ue2d-architect` | `Videogames/ue2d-architect` | Starting/structuring a 2D game, tile size and pixel scale, 2D blockout, room graph, progression layout |
+| `ue2d-paper2d-foundations` | `Videogames/ue2d-paper2d-foundations` | Starting a 2D game, blurry pixel art, sprite sort order |
+| `ue2d-flipbook-animation` | `Videogames/ue2d-flipbook-animation` | Animating 2D characters, flipbooks, PaperZD state machines |
+| `ue2d-platformer-controller` | `Videogames/ue2d-platformer-controller` | 2D platformer movement, floaty or unresponsive jumps |
+| `ue2d-tilemap-levels` | `Videogames/ue2d-tilemap-levels` | 2D level building, tile maps, Tiled import, snagging on tile seams |
+| `ue2d-camera-2d` | `Videogames/ue2d-camera-2d` | 2D camera feel, jitter, nausea, room bounds |
+| `ue2d-parallax-backgrounds` | `Videogames/ue2d-parallax-backgrounds` | Depth in 2D scenes, scrolling backgrounds, seams |
+| `ue2d-hitboxes-and-combat` | `Videogames/ue2d-hitboxes-and-combat` | 2D melee or projectile combat, multi-hits, combat impact |
+| `ue2d-sprite-lighting` | `Videogames/ue2d-sprite-lighting` | Flat-looking 2D art, sprites ignoring lights, hit flashes |
+
+### Narrative and records
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `the-watcher` | `Narrative/the-watcher` | Devlog, development diary, making-of, jam writeup, launch thread, postmortem with personality |
 
 ## Dependency and combination map
 
@@ -90,6 +119,11 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `ue-niagara-audio-trigger` | `elevenlabs-sfx-generator`, `sprite-sheet-packer` | Source of the sounds and flipbook textures it plays |
 | `bark-edge-tts-dialogue` | `state-machine-architect` | Only if voice lines are driven by dialogue/combat states |
 | `drag-drop-raycaster` | `state-machine-architect` | Drag states: idle, hover, dragging, snapped, dropped |
+| `ue-indie-game-setup` | `ue-minimal-level-bootstrap` | Cutting render settings is half the job; a heavy template level undoes it |
+| `ue-minimal-level-bootstrap` | `ue-indie-game-setup` | A clean level still renders with whatever the project's render stack is |
+| `ue-3d-architect` | `ue-minimal-level-bootstrap`, `ue-indie-game-setup` | The blockout needs a clean level to live in and an honest frame budget |
+| `ue2d-architect` | `ue2d-paper2d-foundations`, `ue2d-platformer-controller` | The pixel contract and the jump arc the blockout is dimensioned from |
+| `the-watcher` | nothing | Reads the record; it never needs another skill to write the chronicle |
 | `demo-video` | `script-qa` or `script-stakeholder` | Audience-specific script before rendering |
 | `script-qa` / `script-stakeholder` | `anti-slop`, `audio-clone` | Final polish and narration, only when delivering a finished video |
 | `topic-miner` | `stack-scout` | Only when topics depend on tool comparisons |

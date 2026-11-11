@@ -37,6 +37,7 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`ue-niagara-audio-trigger`](Audio/ue-niagara-audio-trigger/SKILL.md) | Unreal Engine 5 VFX and audio orchestration: tag-driven cues, Niagara parameter driving, MetaSound parameters, pooling, concurrency, networking and dedicated-server guards. |
 | [`elevenlabs-sfx-generator`](Audio/elevenlabs-sfx-generator/SKILL.md) | AI sound effects: prompt structure, ElevenLabs parameters, trimming, loudness targets, layering and variation, engine hand-off. |
 | [`bark-edge-tts-dialogue`](Audio/bark-edge-tts-dialogue/SKILL.md) | Character dialogue with Bark, Edge-TTS and XTTS: line writing, correct Bark tags, voice profiles, batching and caching, loudness, licensing. |
+| [`ue-sfx-pipeline`](Audio/ue-sfx-pipeline/SKILL.md) | Take a raw sound file to something Unreal actually plays: WAV conversion, trimming dead air that delays the hit, mono downmix so it spatialises at all, SoundAttenuation and SoundConcurrency assets, and PlaySoundAtLocation with randomised pitch for self-destroying pickups. |
 
 ### Graphics2D
 
@@ -57,6 +58,39 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`ue-character-movement`](Videogames/ue-character-movement/SKILL.md) | Unreal Engine 5 locomotion patterns: CMC setup, custom movement modes, thread-safe AnimInstance data flow, BlendSpaces, root motion, AI and network prediction. C++ and Blueprint. |
 | [`drag-drop-raycaster`](Videogames/drag-drop-raycaster/SKILL.md) | 3D drag-and-drop math: screen-to-world rays, ray-plane intersection, grab offset, frame-rate independent follow, slot snapping. TypeScript/Three.js and Unreal C++. |
 | [`ue-material-instance-builder`](Videogames/ue-material-instance-builder/SKILL.md) | UE5 material instances: MIC vs MID vs Custom Primitive Data vs MPC, parameter contract, C++ runtime driving, Python editor automation, rarity and dissolve techniques. |
+| [`ue-indie-game-setup`](Videogames/ue-indie-game-setup/SKILL.md) | Cut a UE5 project to an indie render budget: diagnose the frame, three scenario profiles (conservative 3D default, stylized low-poly, flat 2D), the cvar set per profile and why, template scope auditing, and the measurement traps that fake a frame rate. |
+| [`ue-3d-architect`](Videogames/ue-3d-architect/SKILL.md) | Architect a 3D level or game shapes-first: derive every dimension from the pawn's capsule, step height and jump apex, script a colour-coded greybox from BasicShapes, play the box before any art exists, then swap meshes in without moving the metrics. Includes the actor/class map the blockout implies. |
+| [`ue-minimal-level-bootstrap`](Videogames/ue-minimal-level-bootstrap/SKILL.md) | Script a minimal playable UE5 level (floor, sun, SkyLight, atmosphere, fog, reflection capture, PlayerStart) headless via the pythonscript commandlet, and set it as default map. Avoids the world GC leak crash. |
+| [`ue-cpp-module-bootstrap`](Videogames/ue-cpp-module-bootstrap/SKILL.md) | Turn a Blueprint-only project into C++: Target/Build/module files, command-line builds on every platform, and exactly what forces an editor restart. Live Coding is Windows-only; terminal builds silently disable the Compile button. |
+| [`ue-enhanced-input-cpp`](Videogames/ue-enhanced-input-cpp/SKILL.md) | Enhanced Input entirely from C++, with actions and mapping contexts built in code. The WASD swizzle/negate recipe, trigger-event choice, and the BeginPlay ordering bug that silently kills every key. |
+| [`ue-character-import-pipeline`](Videogames/ue-character-import-pipeline/SKILL.md) | Import a rigged character FBX and prove it worked: choose the file by its skeleton not its name, the save trap that orphans a SkeletalMesh, scale and axis conversion, measuring mesh facing from the hips, and a rename pass with reference fixup. |
+| [`ue-third-person-camera`](Videogames/ue-third-person-camera/SKILL.md) | Spring arm and follow camera: who owns the control rotation, camera-relative movement, orient-to-movement, collision pull-in and lag. Includes why the camera looks frozen when only movement is bound. |
+| [`ue-sprint-and-dash`](Videogames/ue-sprint-and-dash/SKILL.md) | Hold-to-run speed switching and dash variants, plus driving animation play rate from real velocity so one walk clip covers every speed and the feet stop sliding. Cooldowns, i-frames and air dash. |
+| [`ue-actor-spawner`](Videogames/ue-actor-spawner/SKILL.md) | Reusable timed spawner for mobs, rewards or hazards: timer-driven with no Tick, a hard cap on live actors, weak pointers, uniform spawn distribution over a disc and a per-wave difficulty counter. |
+| [`ue-proximity-reactions`](Videogames/ue-proximity-reactions/SKILL.md) | Distance-driven reactions such as a gold glow on nearby pickups: authoring the parameterised material from Python, per-actor dynamic instances, and the three habits that keep it cheap across dozens of actors. |
+| [`ue-timers-and-triggers`](Videogames/ue-timers-and-triggers/SKILL.md) | FTimerManager for waves, delays and cooldowns instead of counting down in Tick, plus overlap setup for pickups and trigger volumes including the response rules that decide whether an overlap fires at all. |
+| [`ue-canvas-hud`](Videogames/ue-canvas-hud/SKILL.md) | HUDs and menus in C++ with AHUD and Canvas: counters, health bars with measured centring, circular countdown rings, and a title screen with a clickable PLAY button via hit boxes. |
+| [`ue-procedural-animation`](Videogames/ue-procedural-animation/SKILL.md) | Author an AnimSequence from scratch in Python when the clip does not exist: which 5.2 read APIs return empty, reading the pose from a live component, deriving rotation axes from rig geometry, and verifying each pass with a screenshot. |
+
+#### 2D games (Unreal)
+
+| Skill | Purpose |
+|-------|---------|
+| [`ue2d-architect`](Videogames/ue2d-architect/SKILL.md) | Architect a 2D game shapes-first: the pixel-per-unit and tile contract, reach expressed in tiles, depth lanes with collision on one lane only, a blockout of tinted rectangles driven from a table, the room graph, and the swap to tilemaps without moving a collision edge. |
+| [`ue2d-paper2d-foundations`](Videogames/ue2d-paper2d-foundations/SKILL.md) | Paper2D project setup: sprite import settings that keep pixel art crisp, pixels-per-unit discipline, orthographic camera sizing for an exact pixel ratio, sort order bands and the 3D render features to switch off. |
+| [`ue2d-flipbook-animation`](Videogames/ue2d-flipbook-animation/SKILL.md) | Flipbooks and PaperZD state machines: frame timing in frames not seconds, driving animation from gameplay state without letting it write back, and one-shots over locomotion. |
+| [`ue2d-platformer-controller`](Videogames/ue2d-platformer-controller/SKILL.md) | Platformer feel: jump arcs derived from height and time-to-apex, asymmetric gravity, variable jump height, coyote time, jump buffering, ledge nudging and one-way platforms. |
+| [`ue2d-tilemap-levels`](Videogames/ue2d-tilemap-levels/SKILL.md) | Paper2D tile maps: per-tile collision flush with tile bounds, one collision layer only, importing from Tiled, and chunking large maps for streaming. |
+| [`ue2d-camera-2d`](Videogames/ue2d-camera-2d/SKILL.md) | A 2D follow camera that does not cause nausea: dead zones, interpolated look-ahead, asymmetric vertical damping, room-bounds clamping and pixel snapping applied last. |
+| [`ue2d-parallax-backgrounds`](Videogames/ue2d-parallax-backgrounds/SKILL.md) | Layered parallax: factor choice including foreground above 1.0, the exact tiling arithmetic that avoids seams, material-panner skies and the overdraw budget. |
+| [`ue2d-hitboxes-and-combat`](Videogames/ue2d-hitboxes-and-combat/SKILL.md) | 2D combat as a contract: separate hitbox and hurtbox channels, startup/active/recovery frame data, notify-driven windows, one hit per swing, hitstop and knockback. |
+| [`ue2d-sprite-lighting`](Videogames/ue2d-sprite-lighting/SKILL.md) | Lighting and materials for sprites: unlit versus lit, normal maps, masked versus translucent alpha and what each costs, and gameplay-driven flash and dissolve parameters. |
+
+### Narrative
+
+| Skill | Purpose |
+|-------|---------|
+| [`the-watcher`](Narrative/the-watcher/SKILL.md) | Turn the real record of a build into an epic, funny chronicle: mine git, the Claude Code session transcript, engine logs and timestamps into a dated timeline, stage it as acts where every chapter is a real obstacle with its real number, and close with what is honestly still unverified. |
 
 ## Install on a new machine
 
