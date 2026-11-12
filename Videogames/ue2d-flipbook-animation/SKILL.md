@@ -1,9 +1,21 @@
 ---
 name: ue2d-flipbook-animation
-description: Sprite animation in Unreal Engine 5 - building Paper2D flipbooks from sprite sheets, frame timing in flipbook frames rather than seconds, driving animation from gameplay state, and PaperZD animation state machines with transitions, notifies and animation sequences. Covers choosing between a hand-rolled state switch and PaperZD, and keeping the animation layer out of the movement code. Use when animating a 2D character or effect, when animations do not switch correctly, or when deciding how to structure 2D animation state.
+description: Sprite animation in Unreal Engine 5 - building Paper2D flipbooks from sprite sheets, frame timing in flipbook frames rather than seconds, driving animation from gameplay state, and PaperZD animation state machines with transitions, notifies and animation sequences. Covers choosing between a hand-rolled state switch and PaperZD, and keeping the animation layer out of the movement code. Use when animating a 2D character or effect, when animations do not switch correctly, or when deciding how to structure 2D animation state. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Flipbook Animation
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 A flipbook is an ordered list of sprites with per-frame durations. The interesting work is
 not making one — it is deciding what drives which flipbook, and keeping that decision out

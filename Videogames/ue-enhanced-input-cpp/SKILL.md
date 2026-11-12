@@ -1,9 +1,21 @@
 ---
 name: ue-enhanced-input-cpp
-description: Wire Enhanced Input entirely from C++ in Unreal Engine 5, including building InputActions and an InputMappingContext in code so there are no input assets to keep in sync with the class. Covers the WASD swizzle/negate modifier recipe for a 2D axis, mouse look, press-and-hold actions like sprint, one-shot actions, and the ordering bug that silently kills every key - registering the mapping context in BeginPlay, before the pawn has a controller. Use when keys do nothing, when setting up player input for a character or pawn, or when choosing between input assets and code-built mappings.
+description: Wire Enhanced Input entirely from C++ in Unreal Engine 5, including building InputActions and an InputMappingContext in code so there are no input assets to keep in sync with the class. Covers the WASD swizzle/negate modifier recipe for a 2D axis, mouse look, press-and-hold actions like sprint, one-shot actions, and the ordering bug that silently kills every key - registering the mapping context in BeginPlay, before the pawn has a controller. Use when keys do nothing, when setting up player input for a character or pawn, or when choosing between input assets and code-built mappings. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Enhanced Input from C++
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Enhanced Input is normally driven by `UInputAction` and `UInputMappingContext` assets
 wired up in a Blueprint. You can build both in code instead, which removes the class/asset

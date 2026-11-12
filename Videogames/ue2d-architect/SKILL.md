@@ -1,9 +1,21 @@
 ---
 name: ue2d-architect
-description: Design and structure a 2D indie game in Unreal (Paper2D) as an architect - shapes before sprites, always. Fixes the pixel-to-unit contract and the tile grid, derives jump arc and reach in tiles, blocks the whole game out of flat colour-tinted rectangles on depth lanes, designs the room graph and the screen-sized composition, validates it by playing the rectangles, then swaps tilemaps and sprites in without moving a single collision edge. Also maps the blockout onto the actor, state and flipbook architecture. Use when starting a 2D level or game, planning its structure, greyboxing or blocking out 2D space, choosing tile size and pixel scale, laying out rooms and progression, or when a level built straight from art no longer plays correctly.
+description: Design and structure a 2D indie game in Unreal (Paper2D) as an architect - shapes before sprites, always. Fixes the pixel-to-unit contract and the tile grid, derives jump arc and reach in tiles, blocks the whole game out of flat colour-tinted rectangles on depth lanes, designs the room graph and the screen-sized composition, validates it by playing the rectangles, then swaps tilemaps and sprites in without moving a single collision edge. Also maps the blockout onto the actor, state and flipbook architecture. Use when starting a 2D level or game, planning its structure, greyboxing or blocking out 2D space, choosing tile size and pixel scale, laying out rooms and progression, or when a level built straight from art no longer plays correctly. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE 2D Architect
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 2D hides nothing. There is no depth to distract from a jump that falls one pixel short, so
 the structure has to be right before any sprite exists.

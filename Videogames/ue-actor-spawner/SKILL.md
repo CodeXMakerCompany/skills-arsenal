@@ -1,9 +1,21 @@
 ---
 name: ue-actor-spawner
-description: A reusable timed spawner actor for Unreal Engine 5 that drops mobs, pickups, rewards or hazards into a level in waves - timer driven with no per-frame cost, a hard cap on live actors so a long session cannot grow unbounded, weak pointers so collected or killed actors are not kept alive, uniform spawn distribution over a disc, a minimum distance from the player, and a difficulty counter that rises each wave. Use when building a wave spawner, a reward or pickup generator, a mob generator, or any system that periodically adds actors to a running level.
+description: A reusable timed spawner actor for Unreal Engine 5 that drops mobs, pickups, rewards or hazards into a level in waves - timer driven with no per-frame cost, a hard cap on live actors so a long session cannot grow unbounded, weak pointers so collected or killed actors are not kept alive, uniform spawn distribution over a disc, a minimum distance from the player, and a difficulty counter that rises each wave. Use when building a wave spawner, a reward or pickup generator, a mob generator, or any system that periodically adds actors to a running level. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Timed Actor Spawner
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 One actor whose only job is to put other actors in the world on a schedule. Mobs, coins,
 hazards and power-ups are the same system with a different class and different tuning, so

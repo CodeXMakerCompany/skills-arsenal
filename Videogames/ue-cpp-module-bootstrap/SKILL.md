@@ -1,14 +1,27 @@
 ---
 name: ue-cpp-module-bootstrap
-description: Turn a Blueprint-only Unreal Engine 5 project into a C++ project and keep the build loop sane - the exact Target/Build/module files, the uproject entry, building from the command line on Linux, macOS and Windows, and the reality of what forces an editor restart. Covers why Live Coding does not exist on Linux, when Hot Reload copes and when it corrupts, and the trap where terminal builds silently disable the editor's Compile button. Use when adding C++ to a Blueprint project, when a new class does not appear in the editor, when the editor must be restarted repeatedly, or when gameplay logic cannot be authored because Blueprint graphs are not scriptable.
+description: Turn a Blueprint-only Unreal Engine 5 project into a C++ project and keep the build loop sane - the exact Target/Build/module files, the uproject entry, building from the command line on Linux, macOS and Windows, and the reality of what forces an editor restart. Covers why Live Coding does not exist on Linux, when Hot Reload copes and when it corrupts, and the trap where terminal builds silently disable the editor's Compile button. Use when adding C++ to a Blueprint project, when a new class does not appear in the editor, or when the editor must be restarted repeatedly. On UE 5.8 the module versions are BuildSettingsVersion.V7 and EngineIncludeOrderVersion.Unreal5_8; editor graphs are authored through Unreal MCP, and the build loop itself is ue-project-build.
 ---
 
 # UE5 C++ Module Bootstrap
 
-A Blueprint-only project has no `Source/` directory. The moment you need logic that
-cannot be authored from a script — and Blueprint event graphs **cannot** be authored
-from Python, there is no node-creation API — you need a C++ module. This is the whole
-setup, plus the build loop that follows it.
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
+
+A Blueprint-only project has no `Source/` directory. Add a C++ module when gameplay
+has to live in the cooked game as text. On 5.8, Blueprint and widget graphs are authored
+through their MCP toolsets, so "the graph cannot be scripted" is no longer a reason to
+add a module. The file templates are here. Versions, Live Coding, cook and package are
+in `ue-project-build`.
 
 ## Before you start
 
@@ -45,8 +58,8 @@ public class my_gameTarget : TargetRules
 	public my_gameTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
-		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_2;
+		DefaultBuildSettings = BuildSettingsVersion.V7;
+		IncludeOrderVersion = EngineIncludeOrderVersion.Unreal5_8;
 		ExtraModuleNames.Add("my_game");
 	}
 }
@@ -187,13 +200,11 @@ so the button appears broken. Pick one workflow per session and say which you ar
 | `SetTimer` will not compile with your handler | Timer handlers must be `void()` | Add a thin `void` wrapper that calls the real function |
 | Link fails with the editor open | The target library is loaded | Close the editor; only the *first* build of a brand new module is safe with it open |
 
-## 7. What C++ unlocks that scripting cannot
+## 7. What still belongs in C++
 
-Worth knowing before you decide to add a module at all. Python in the editor can create
-assets, place actors, import meshes, author materials and even author `AnimSequence` bone
-tracks. It **cannot** create Blueprint graph nodes or connect pins: `BlueprintEditorLibrary`
-exposes `add_function_graph` and `find_graph`, but there is no node-creation API. Anything
-that needs runtime logic — input bindings, timers, collision responses, HUD drawing — is
-therefore C++ or hand-authored Blueprint, with no third option.
+Editor setup (import, placement, materials, Blueprint graphs, widget layout) belongs to
+the MCP toolsets. Add a module when the behavior ships in the cooked game and you want
+it in source control as text, when it runs on the movement component every frame, or
+when the API is not exposed to Blueprint.
 
-Related: [[ue-enhanced-input-cpp]], [[ue-canvas-hud]], [[ue-actor-spawner]].
+Related: [[ue-project-build]], [[ue-enhanced-input-cpp]], [[ue-canvas-hud]], [[ue-actor-spawner]].

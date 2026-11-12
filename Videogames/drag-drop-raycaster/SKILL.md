@@ -1,6 +1,6 @@
 ---
 name: drag-drop-raycaster
-description: Screen-to-world cursor projection, ray-plane intersection, smooth follow interpolation and slot snapping for 3D drag-and-drop. Use when building draggable objects, card/piece/inventory placement on a board, grid or slot snapping, or any mechanic that maps a 2D pointer to a 3D position, in Three.js/TypeScript, Unreal Engine C++/Blueprint, Unity or custom engines.
+description: Screen-to-world cursor projection, ray-plane intersection, smooth follow interpolation and slot snapping for 3D drag-and-drop. Use when building draggable objects, card/piece/inventory placement on a board, grid or slot snapping, or any mechanic that maps a 2D pointer to a 3D position, in Three.js/TypeScript, Unreal Engine C++/Blueprint, Unity or custom engines. When the engine is Unreal 5.8, place the test board through Unreal MCP toolsets instead of remote Python.
 ---
 
 # 3D Drag & Drop: Raycast, Plane, Follow, Snap
@@ -12,6 +12,7 @@ A drag is four steps per frame: pointer to ray, ray to point on a plane, point t
 1. Identify the engine and camera type (perspective or orthographic). Orthographic rays are parallel, so the ray origin moves with the pointer and the direction is constant. The math below still holds.
 2. Decide the drag surface: a horizontal plane (board, table, floor), a camera-facing plane (free 3D move), or the actual geometry under the cursor (surface-following).
 3. Decide what can be dropped where (slots, grid cells, free placement) and what happens on an invalid drop (return to origin, stay, destroy).
+4. In Unreal 5.8, place the board and the pieces through `unreal-mcp` (describe the actor toolset, then call it). The math below is the runtime. It does not require the server.
 
 ## Math
 

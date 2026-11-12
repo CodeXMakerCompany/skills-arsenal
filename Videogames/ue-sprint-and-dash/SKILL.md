@@ -1,9 +1,21 @@
 ---
 name: ue-sprint-and-dash
-description: Sprint, dash and burst movement for an Unreal Engine 5 character in C++ - hold-to-run speed switching, driving animation play rate from actual velocity so one walk clip covers every speed and the feet stop sliding, impulse and timed dash variants, cooldowns, i-frames, air control during a dash, and stamina gating. Use when adding a run or sprint key, a dash or dodge roll, when feet slide during locomotion, or when movement needs a burst that the standard character movement component does not provide.
+description: Sprint, dash and burst movement for an Unreal Engine 5 character in C++ - hold-to-run speed switching, driving animation play rate from actual velocity so one walk clip covers every speed and the feet stop sliding, impulse and timed dash variants, cooldowns, i-frames, air control during a dash, and stamina gating. Use when adding a run or sprint key, a dash or dodge roll, when feet slide during locomotion, or when movement needs a burst that the standard character movement component does not provide. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Sprint and Dash
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Sprint is a speed change. Dash is a displacement with a cooldown. They share one problem:
 the animation has to agree with what the movement component is actually doing, or the

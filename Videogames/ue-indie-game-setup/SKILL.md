@@ -1,9 +1,21 @@
 ---
 name: ue-indie-game-setup
-description: Cut an Unreal Engine 5 project down to a render budget an indie or jam team can actually ship, and prove the cut with measurements instead of guesses. Covers the three scenario profiles (conservative 3D, stylized low-poly, flat 2D), the exact cvars each one sets and why, template scope auditing (Open World landscapes, World Partition proxies, volumetric clouds), and the measurement traps that make UE performance work on Linux/AMD look like something it is not. Use when the editor crawls, when a project was started from a heavyweight template, when deciding what to turn off for a small team, or when asked for a "perfect indie setup". Default profile is conservative 3D.
+description: Cut an Unreal Engine 5 project down to a render budget an indie or jam team can actually ship, and prove the cut with measurements instead of guesses. Covers the three scenario profiles (conservative 3D, stylized low-poly, flat 2D), the exact cvars each one sets and why, template scope auditing (Open World landscapes, World Partition proxies, volumetric clouds), and the measurement traps that make UE performance work on Linux/AMD look like something it is not. Use when the editor crawls, when a project was started from a heavyweight template, when deciding what to turn off for a small team, or when asked for a "perfect indie setup". Default profile is conservative 3D. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Indie Game Setup
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 UE5's templates default to a AAA render stack: Lumen, Virtual Shadow Maps, TSR, Nanite,
 volumetric clouds, and on the Open World template an entire streaming landscape. Each of
@@ -98,8 +110,10 @@ Both of these will hand you a number that has nothing to do with rendering cost:
   constant — **exactly 333.3 ms (3.0 fps)** — identical across wildly different render
   settings. That is the idle timer, not your GPU.
 
-There is no reliable Python API to force a viewport into Realtime, so **a remote script
-cannot measure editor fps**. Measure one of these ways instead:
+Do not measure editor fps from a remote Python script. Describe the editor toolset
+first; a viewport or screenshot tool is allowed to drive Realtime if it is actually
+listed. If none is, measure in the viewport with `stat unit` while Realtime is on, or
+from a packaged benchmark:
 
 | Method | Good for |
 |--------|----------|

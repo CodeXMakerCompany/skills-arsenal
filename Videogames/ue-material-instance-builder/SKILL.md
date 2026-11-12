@@ -1,9 +1,21 @@
 ---
 name: ue-material-instance-builder
-description: Patterns for creating and driving material instances in Unreal Engine 5 from C++, Blueprint and Editor automation. Use when applying generated or per-item textures, rarity glows, dissolve or hover effects, character skins or team colors to meshes, and when choosing between Dynamic Material Instances, Material Instance Constants, Custom Primitive Data and Material Parameter Collections.
+description: Patterns for creating and driving material instances in Unreal Engine 5 from C++, Blueprint and Editor automation. Use when applying generated or per-item textures, rarity glows, dissolve or hover effects, character skins or team colors to meshes, and when choosing between Dynamic Material Instances, Material Instance Constants, Custom Primitive Data and Material Parameter Collections. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Material Instance Builder
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Build one flexible master material, expose a small set of well-named parameters, and drive them from code or editor automation. The key decision is *which kind of instance* each use case needs, because it decides cost and what can be changed.
 
@@ -147,7 +159,7 @@ Inst->SetScalarParameterValue(TEXT("GlobalGlowIntensity"), 1.5f);
 
 ## 4. Editor automation: create MICs from generated textures
 
-Use this when AI-generated card art or skins arrive in bulk. Python in the Editor (enable the Python Editor Script Plugin):
+Use this when AI-generated card art or skins arrive in bulk. Create the instances through the material toolset (`describe_toolsets` first). The Python below is the operation when no tool covers instance creation:
 
 ```python
 import unreal

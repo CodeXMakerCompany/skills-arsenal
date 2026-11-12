@@ -102,6 +102,16 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `ue2d-parallax-backgrounds` | `Videogames/ue2d-parallax-backgrounds` | Depth in 2D scenes, scrolling backgrounds, seams |
 | `ue2d-hitboxes-and-combat` | `Videogames/ue2d-hitboxes-and-combat` | 2D melee or projectile combat, multi-hits, combat impact |
 | `ue2d-sprite-lighting` | `Videogames/ue2d-sprite-lighting` | Flat-looking 2D art, sprites ignoring lights, hit flashes |
+| `ue-project-build` | `Videogames/ue-project-build` | UE 5.8 compile, Live Coding, cook, package, toolchain |
+| `ue-contracts-types` | `Videogames/ue-contracts-types` | Interfaces, data assets, and the types systems use instead of Cast |
+| `ue-gameplay-tags` | `Videogames/ue-gameplay-tags` | Tag vocabulary for items, damage, states, abilities |
+| `ue-merge-objects` | `Videogames/ue-merge-objects` | Two items of one family become one new item |
+| `ue-state-machines` | `Videogames/ue-state-machines` | AnimBP vs State Tree vs GAS vs a C++ mode machine |
+| `ue-action-time-windows` | `Videogames/ue-action-time-windows` | Startup, active, recovery, buffer, cancel, hitstop |
+| `ue-anim-montages-notifies` | `Videogames/ue-anim-montages-notifies` | One-shot montages, sections, notifies |
+| `ue-combo-systems` | `Videogames/ue-combo-systems` | Combo graphs, buffers, cancel edges |
+| `ue-breaking-the-4th-wall` | `Videogames/ue-breaking-the-4th-wall` | The game acknowledges the camera, the real keybind, the HUD, or the save |
+| `ue-loop-systems` | `Videogames/ue-loop-systems` | Moment, session and meta loops, or a time-loop reset |
 
 ### Narrative and records
 
@@ -123,6 +133,11 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `ue-minimal-level-bootstrap` | `ue-indie-game-setup` | A clean level still renders with whatever the project's render stack is |
 | `ue-3d-architect` | `ue-minimal-level-bootstrap`, `ue-indie-game-setup` | The blockout needs a clean level to live in and an honest frame budget |
 | `ue2d-architect` | `ue2d-paper2d-foundations`, `ue2d-platformer-controller` | The pixel contract and the jump arc the blockout is dimensioned from |
+| `ue-cpp-module-bootstrap` | `ue-project-build` | The files are the bootstrap. Versions, reload and cook are the build skill |
+| `ue-combo-systems` | `ue-action-time-windows`, `ue-anim-montages-notifies` | A combo edge is only legal inside a window on a montage |
+| `ue-merge-objects` | `ue-contracts-types`, `ue-gameplay-tags` | The recipe is data and tags, not a new subclass |
+| `ue-breaking-the-4th-wall` | `ue-state-machines`, `ue-enhanced-input-cpp` | One director owns the beat, and the line must read the real binding |
+| `ue-loop-systems` | `ue-state-machines` | The session phase is a machine. Tick does not decide that the run ended |
 | `the-watcher` | nothing | Reads the record; it never needs another skill to write the chronicle |
 | `demo-video` | `script-qa` or `script-stakeholder` | Audience-specific script before rendering |
 | `script-qa` / `script-stakeholder` | `anti-slop`, `audio-clone` | Final polish and narration, only when delivering a finished video |

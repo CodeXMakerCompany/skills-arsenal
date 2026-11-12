@@ -1,9 +1,21 @@
 ---
 name: ue-proximity-reactions
-description: Make actors react to how close the player is in Unreal Engine 5 - distance-driven material glow with a dynamic material instance, authoring the parameterised material from Python, smooth interpolation instead of a hard threshold, and the three performance habits that keep it cheap across dozens of actors - caching the pawn in a weak pointer, writing a material parameter only when it changed, and choosing distance checks over overlap spheres. Use when pickups should highlight near the player, when enemies should telegraph awareness, or for any per-actor reaction driven by distance.
+description: Make actors react to how close the player is in Unreal Engine 5 - distance-driven material glow with a dynamic material instance, authoring the parameterised material from Python, smooth interpolation instead of a hard threshold, and the three performance habits that keep it cheap across dozens of actors - caching the pawn in a weak pointer, writing a material parameter only when it changed, and choosing distance checks over overlap spheres. Use when pickups should highlight near the player, when enemies should telegraph awareness, or for any per-actor reaction driven by distance. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Proximity Reactions
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 "Light up when the player is near" is a distance check, a material parameter and a lerp.
 Done carelessly across thirty actors it is also thirty actor lookups and thirty render
@@ -19,7 +31,9 @@ thread writes per frame, which is why the habits below matter more than the effe
 3. **Decide where the reaction lives.** Per-actor state belongs on the actor; a global
    "nearest pickup" belongs in a subsystem.
 
-## 1. Author the material from Python
+## 1. Author the material
+
+Build this graph through the material toolset. The Python is the graph when no described tool creates those expressions.
 
 ```python
 import unreal

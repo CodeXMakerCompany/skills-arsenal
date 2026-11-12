@@ -1,9 +1,21 @@
 ---
 name: ue-3d-architect
-description: Design and structure a 3D indie game in Unreal Engine as an architect - shapes before assets, always. Derives every world dimension from the character's measured metrics (capsule, step height, jump apex, reach), scripts a colour-coded greybox out of BasicShapes primitives, validates it by playing the box, and only then swaps meshes in while keeping the blockout as the collision and metric source of truth. Also maps the spatial blockout onto the actor and class architecture that implements it. Use when starting a 3D level or game, planning scope and structure, greyboxing, whiteboxing, blocking out a space, deciding spatial metrics, or when a level built straight from art assets no longer plays correctly.
+description: Design and structure a 3D indie game in Unreal Engine as an architect - shapes before assets, always. Derives every world dimension from the character's measured metrics (capsule, step height, jump apex, reach), scripts a colour-coded greybox out of BasicShapes primitives, validates it by playing the box, and only then swaps meshes in while keeping the blockout as the collision and metric source of truth. Also maps the spatial blockout onto the actor and class architecture that implements it. Use when starting a 3D level or game, planning scope and structure, greyboxing, whiteboxing, blocking out a space, deciding spatial metrics, or when a level built straight from art assets no longer plays correctly. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 3D Architect
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 An architect does not start with marble. You start with the grid, the dimensions and the
 volumes, and you prove the space works while it is still free to destroy.
@@ -123,9 +135,10 @@ Two things that save hours:
   Make each wall `footprint + thickness` long, as `Wall_N` above does (4080 for a 4000
   arena with 40 thick walls).
 
-Run it headless through the `pythonscript` commandlet when the level is being generated
-from scratch — building levels over remote execution in a live editor can take the editor
-down with a world GC leak.
+Place that blockout through the actor toolset in the open editor. The Python is the
+metric contract: centres, scale, corner overlap. Do not generate the level from a
+commandlet unless the level tools fail. On 5.2, remote `new_level` could crash the
+editor with a world GC leak; that is a fallback hazard, not the default path.
 
 ## 4. Make the box readable
 

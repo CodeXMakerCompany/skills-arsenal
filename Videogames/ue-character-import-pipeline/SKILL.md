@@ -1,9 +1,21 @@
 ---
 name: ue-character-import-pipeline
-description: Import a rigged character FBX into Unreal Engine 5 correctly and prove it worked - choosing between several candidate files by inspecting their skeletons rather than their names, scripted AssetImportTask settings, the save trap that leaves a SkeletalMesh on disk without its Skeleton, scale and axis conversion, measuring which way the mesh faces instead of guessing, and a clean asset naming pass with reference fixup. Use when importing a character, when a skeletal mesh imports broken or sideways, when a character walks backwards, or when deciding which of several exported FBX files to use.
+description: Import a rigged character FBX into Unreal Engine 5 correctly and prove it worked - choosing between several candidate files by inspecting their skeletons rather than their names, scripted AssetImportTask settings, the save trap that leaves a SkeletalMesh on disk without its Skeleton, scale and axis conversion, measuring which way the mesh faces instead of guessing, and a clean asset naming pass with reference fixup. Use when importing a character, when a skeletal mesh imports broken or sideways, when a character walks backwards, or when deciding which of several exported FBX files to use. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Character Import Pipeline
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Importing a character is three jobs: pick the right source file, import it with settings
 that survive contact with a real rig, and verify the result instead of assuming. Most

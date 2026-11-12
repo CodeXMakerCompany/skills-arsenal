@@ -1,9 +1,21 @@
 ---
 name: ue-timers-and-triggers
-description: Timers and collision triggers in Unreal Engine 5 C++ - FTimerManager for looping waves, one-shot delays and cooldowns instead of counting down in Tick, the void signature requirement, clearing timers in EndPlay, exposing remaining time to a HUD, and overlap setup for pickups and trigger volumes including the collision response rules that decide whether an overlap fires at all. Use when adding a wave timer, a cooldown, a pickup the player walks into, a trigger volume, or when an overlap event never fires.
+description: Timers and collision triggers in Unreal Engine 5 C++ - FTimerManager for looping waves, one-shot delays and cooldowns instead of counting down in Tick, the void signature requirement, clearing timers in EndPlay, exposing remaining time to a HUD, and overlap setup for pickups and trigger volumes including the collision response rules that decide whether an overlap fires at all. Use when adding a wave timer, a cooldown, a pickup the player walks into, a trigger volume, or when an overlap event never fires. On UE 5.8, change the editor through Unreal MCP toolsets instead of remote Python.
 ---
 
 # UE5 Timers and Triggers
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Two systems that account for most "it didn't happen" bugs: work scheduled on a clock, and
 work fired by actors touching. Both fail silently when set up wrong, which is why the
@@ -165,8 +177,8 @@ MeshComp->SetCollisionProfileName(TEXT("BlockAll"));
 MeshComp->SetMobility(EComponentMobility::Static);
 ```
 
-Setting the profile by name sidesteps the enum spelling, which differs between the C++
-and Python APIs and is a regular source of friction when scripting level setup.
+Set the profile by name. Confirm that name against the collision profiles in this
+project. Do not copy a Python enum spelling into C++.
 
 For walls around a floor, overlap them at the corners. Four walls at exactly the floor
 extent leave four square gaps where the player falls through — make each wall longer than

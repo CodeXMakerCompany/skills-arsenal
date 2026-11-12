@@ -1,9 +1,21 @@
 ---
 name: ue-procedural-animation
-description: Author an AnimSequence from scratch in Unreal Engine 5 with Python when the animation you need does not exist - creating the asset, writing bone tracks through AnimationDataController, reading a reference pose from a live skeletal mesh component because the 5.2 read APIs return empty, deriving rotation axes from rig geometry instead of guessing, shaping an easing envelope, and verifying each iteration with a screenshot. Use when a required clip is missing from the assets, when building a punch, wave or gesture from a rig, or when scripting animation data in the editor.
+description: Author an AnimSequence from scratch in Unreal Engine 5 when the animation you need does not exist - creating the asset, writing bone tracks, reading a reference pose from a live skeletal mesh component, deriving rotation axes from rig geometry instead of guessing, shaping an easing envelope, and verifying each iteration with a screenshot. Use when a required clip is missing from the assets, when building a punch, wave or gesture from a rig, or when scripting animation data in the editor. On UE 5.8, prefer the Sequencer and animation toolsets; the Python write path below is the fallback, and pose reads that returned empty on 5.2 must be re-checked against the described tools before you trust them.
 ---
 
 # UE5 Procedural Animation from Python
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 Sometimes the clip you need simply is not in the project. You can author one: create an
 `AnimSequence`, write bone tracks, and iterate against screenshots. The result will not
@@ -20,10 +32,15 @@ blocking on an asset that does not exist.
 3. **Budget for iteration.** Expect two or three passes with a screenshot between each.
    Reasoning about quaternion signs is slower and less reliable than looking.
 
-## 1. What works and what does not in UE 5.2
+## 1. Prefer the animation tools, and do not trust 5.2 reads
 
-The read side of the Python animation API is largely broken against the new
-sequencer-backed data model. Establish this before building on it:
+Describe the Sequencer and animation toolsets and use them when they can create the
+clip and write bone keys. The Python below is the fallback.
+
+On 5.2 the read side of the Python animation API returned empty against the
+sequencer-backed data model. Re-test those calls on 5.8 before trusting them. Until a
+call returns real keys, read poses from a live skeletal mesh component and write
+through the controller.
 
 | Call | Result on 5.2 |
 |------|---------------|
@@ -191,7 +208,7 @@ one-shot for the mesh.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| All pose reads return zero or identity | 5.2 read APIs are empty on the sequencer data model | Read from a live component |
+| All pose reads return zero or identity | The Python read API is still empty on this engine | Read from a live component, or use the animation tool that returned real keys |
 | `set_number_of_frames` type error | Passing an int | `unreal.FrameNumber(n)` |
 | Gesture lifts instead of swinging | One axis shared across arm, shoulder and spine | Separate swing and twist axes |
 | Motion is robotic | Linear envelope | Smoothstep plus an accelerating strike |

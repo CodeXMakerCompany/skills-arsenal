@@ -1,9 +1,21 @@
 ---
 name: ue-minimal-level-bootstrap
-description: Create a minimal, cheap, ready-to-play Unreal Engine 5 level from scratch by script - floor, sun, SkyLight, atmosphere, height fog, a hand-placed reflection capture and a PlayerStart - and make it the project's default map. Built headless with the pythonscript commandlet, because creating or loading a level over Python remote execution crashes the editor with a world GC leak assert. Use when replacing a heavyweight template level, starting a jam project, needing a clean test or greybox level, or when asked for a minimal or blank level setup.
+description: Create a minimal, cheap, ready-to-play Unreal Engine 5 level - floor, sun, SkyLight, atmosphere, height fog, a reflection capture and a PlayerStart - and make it the project's default map. Use when replacing a heavyweight template level, starting a jam project, needing a clean test or greybox level, or when asked for a minimal or blank level setup. On UE 5.8, create and save that level through Unreal MCP level tools with the editor open. The pythonscript commandlet is only the fallback if those tools fail.
 ---
 
 # UE5 Minimal Level Bootstrap
+
+## Working in the UE 5.8 editor
+
+On 5.8 the editor is an MCP server, `unreal-mcp` at `http://127.0.0.1:8000/mcp`, when the Unreal MCP and All Toolsets plugins are enabled. Change the editor through those tools.
+
+1. Spawn, import, materials, Blueprints, widgets and levels go through `unreal-mcp`. If that server is not connected, stop before mutating the editor and say so. Writing the runtime code in this skill does not require it. Do not move those editor mutations to remote Python when a toolset can do them.
+2. `list_toolsets`, then `describe_toolsets` with schemas, then `call_tool`. Names change between builds. Never call a tool you have not just described.
+3. Save the level and dirty assets before a bulk edit and again after. An error result means the edit did not happen.
+4. Stop PIE first. Tool calls run one at a time on the game thread.
+5. Editor Python is the fallback for an operation no described tool covers. Keep world and actor references inside the function, never in a module global.
+6. Python samples in this skill specify the operation. Translate them into the toolset you just described, and run the Python only when no tool covers it.
+
 
 A small level with exactly the actors a playable scene needs and nothing else. Eight
 actors, no landscape, no streaming, no volumetric clouds. It opens instantly and it is the
@@ -23,40 +35,28 @@ that will cost you a crashed editor and a silently empty log if you meet them co
    unreal.EditorLoadingAndSavingUtils.save_map(w, '/Game/Maps/L_OpenWorld')
    ```
 
-2. **Close the editor.** This runs headless and should not compete with a GUI editor for
-   the project's file locks.
+2. **Keep the editor open.** Create, open and save the map with the level toolset. The
+   actor list below is the content of that level.
 3. **Decide the playspace size.** The floor below is 40 × 40 m (a 100 unit `Plane` scaled
    40×). Scale it to the game, not to the template.
 
-## 1. Why headless, and never remote execution
+## 1. Create the level in the open editor
 
-Creating or loading a level from Python *remote execution* crashes UE 5.2:
+The eight actors are the level. Spawn them through the actor toolset after the level
+toolset has created and opened the map.
 
-```
-Fatal error: [EditorServer.cpp] World Memory Leaks: 1 leaks objects and packages
-  UEditorEngine::CheckForWorldGCLeaks(UWorld*, UPackage*)
-```
+On 5.2, creating or loading a level from Python remote execution crashed the editor with
+`World Memory Leaks` inside `CheckForWorldGCLeaks`. A map change from inside the ticker
+is reentrant, and a `UWorld` left in a Python module global keeps the old world alive
+until the editor asserts. That is why this skill used to demand a commandlet.
 
-Two separate causes, and both are easy to walk into:
+On 5.8 that is the fallback, not the path:
 
-- **Remote execution runs inside the engine ticker.** The call stack is
-  `FTSTicker::Tick → FPythonScriptRemoteExecution::Tick → ULevelEditorSubsystem::NewLevel
-  → UEditorEngine::NewMap`. A map transition from inside the tick is reentrant.
-- **The editor's Python interpreter persists between executions.** Any module-level
-  `w = get_editor_world()` from an *earlier, unrelated* script is still bound in
-  `__main__`. When the engine tries to garbage collect the old world, it finds that
-  reference, declares a leak and asserts. The editor closes.
-
-Consequences for any script you write against a live editor:
-
-- Never assign worlds, levels or actors to module-level globals. Put everything in
-  functions so the references die with the call frame.
-- Never create or load a level over remote execution. Use the commandlet below.
-
-In a fresh commandlet process the interpreter is clean and the script runs outside the
-ticker, so `new_level` is safe there. Note that `new_level` creates *and* opens in one
-call, which also avoids holding a reference to a freshly created world asset — doing it as
-`create_asset` then `load_level` reintroduces the same leak assert.
+- Do not hold worlds, levels or actors in module globals.
+- Do not create or load a level from remote Python while a level tool exists.
+- If the tools fail and you must use the `pythonscript` commandlet, close the editor
+  first. Its prints go to `Saved/Logs`, not stdout. `new_level` creates and opens in one
+  call. Splitting that into `create_asset` then `load_level` was the leak.
 
 ## 2. The build script
 
@@ -216,7 +216,7 @@ settings to match with the companion skill `ue-indie-game-setup`.
 
 | Symptom | Cause | Fix |
 |---------|-------|-----|
-| Editor dies on `new_level` / `load_level` with "World Memory Leaks" | Called over remote execution, and/or a stale global holds the old world | Run headless; keep every world reference inside a function |
+| Editor dies on `new_level` / `load_level` with "World Memory Leaks" | Level change ran from remote Python, or a stale global holds the old world | Use the level toolset instead. If you already fell back to Python, keep every world reference inside a function |
 | Script "executed successfully" but prints nothing | Commandlet Python output goes to the project log, not stdout | `grep` the log; check the artifact on disk |
 | "Old world ... not cleaned up by garbage collection while loading new map" | Holding the object returned by `create_asset` across a `load_level` | Use `new_level`, which creates and opens in one call |
 | `Failed to find property 'volumetric_fog'` | The per-component property name differs by engine version | Set `r.VolumetricFog=0` project-wide; probe names with `[a for a in dir(comp) if 'volum' in a.lower()]` |
