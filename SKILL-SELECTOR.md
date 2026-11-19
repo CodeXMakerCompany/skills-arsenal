@@ -113,6 +113,105 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `ue-breaking-the-4th-wall` | `Videogames/ue-breaking-the-4th-wall` | The game acknowledges the camera, the real keybind, the HUD, or the save |
 | `ue-loop-systems` | `Videogames/ue-loop-systems` | Moment, session and meta loops, or a time-loop reset |
 
+### Agent workflow (any project)
+
+Almost every project wants `codex-mode` plus the handful of leaves its playbooks reach for. Extract `Principles/` whole: the leaves are small and `codex-mode` cites them by name, so a missing one breaks a citation.
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `codex-mode` | `Agentic/codex-mode` | **Default for any project.** The operating style, 12 playbooks, the worker rules |
+| `clarity` | `Agentic/clarity` | **Default for any project with tickets or a spec.** Blocks on ambiguous requirements |
+| `architect` | `Agentic/architect` | Shapes, types and boundaries before code |
+| `arena` | `Agentic/arena` | A contested or precedent-free design, several candidates |
+| `swarm` | `Agentic/swarm` | Parallel coverage over independent slices |
+| `figure-it-out` | `Agentic/figure-it-out` | A large migration or ambitious multi-part change |
+| `sharpen` | `Agentic/sharpen` | Deepening a prompt before running it |
+| `recall` | `Agentic/recall` | Resuming work across sessions |
+| `ketchup` | `Agentic/ketchup` | Catching a human up after they stepped away |
+| `show-me-your-work` | `Agentic/show-me-your-work` | Long or unattended runs needing an audit trail |
+| all 24 principles | `Principles/` | Extract whole. `codex-mode` cites them by name |
+
+### Verification and proof
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `interrogate` | `Verification/interrogate` | Adversarial review of a change or design |
+| `blast-radius` | `Verification/blast-radius` | What a change breaks elsewhere, before it ships |
+| `benchmark-checklist` | `Verification/benchmark-checklist` | Any performance number you will report |
+| `tdd` | `Verification/tdd` | A bug with a cheap, obvious test path |
+| `statechart` | `Verification/statechart` | An ordering, retry or concurrency risk worth model-checking |
+| `create-verification-skill` | `Verification/create-verification-skill` | The project has no scripted way to drive the real app |
+| `maintain-verification-skill` | `Verification/maintain-verification-skill` | A feature map that has drifted from the app |
+| `create-formal-verification-skill` | `Verification/create-formal-verification-skill` | An invariant where a bug is expensive and tests do not reach |
+| `maintain-formal-verification-skill` | `Verification/maintain-formal-verification-skill` | Verified code changed without rechecking the model |
+
+### Code quality (any language)
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `comment-psycho` | `Development/comment-psycho` | Shipping with no comments, self-documenting naming and typings, stripping comment noise |
+| `typescript-best-practices` | `Development/typescript-best-practices` | Any TypeScript or React project |
+| `state-machine-architect` | `Development/state-machine-architect` | Phase, mode or lifecycle logic (also listed under game development) |
+
+### Security and review
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `nexus-guard` | `Security/nexus-guard` | **Any project that ships to production.** The merge and deploy gate |
+| `ai-diff-review` | `Security/ai-diff-review` | Agents write code in this repo, so review must scale with risk |
+| `llm-threat-model` | `Security/llm-threat-model` | The project calls a model, uses retrieval, or gives an agent tools |
+
+### AI in production
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `llm-evals` | `AIEngineering/llm-evals` | Any prompt or model change that must not regress |
+| `inference-tuning` | `AIEngineering/inference-tuning` | A slow or expensive model call, or choosing a model per route |
+
+### Cost
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `cost-per-request` | `FinOps/cost-per-request` | **Any project that calls a model or allocates cloud resources** |
+| `cloud-cost-forecast` | `FinOps/cloud-cost-forecast` | Explaining a bill, forecasting spend, a commitment decision |
+
+### Platform and delivery
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `deploy-pipeline` | `Platform/deploy-pipeline` | CI/CD setup, or a pipeline slow enough that people batch changes |
+| `iac-review` | `Platform/iac-review` | The project has Terraform or CloudFormation |
+| `observability-baseline` | `Platform/observability-baseline` | A new service, or one that cannot be debugged in production |
+| `aws-log-insights` | `aws-log-insights` | Forensic RCA on AWS logs (root-level skill) |
+
+### Communication and docs
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `how` / `why` | `Communication/how`, `Communication/why` | Onboarding into unfamiliar code, or recovering a rationale |
+| `heatmap` | `Communication/heatmap` | A repo nobody has mapped, or business logic nobody can locate |
+| `teach` | `Communication/teach` | Explaining a subsystem or a change to a person |
+| `forever-learning` | `Communication/forever-learning` | A technology the team half-knows and keeps getting wrong at depth |
+| `feeling` | `Communication/feeling` | The project ships anything a human reacts to: UI, demos, video, updates |
+| `enjoyable-talk` | `Communication/enjoyable-talk` | Extract alongside `codex-mode` to set the working register |
+| `bro` | `Communication/bro` | Translating an answer that landed as jargon |
+| `in-your-own-words` | `Communication/in-your-own-words` | Fixing intent before work starts |
+| `unslop` | `Communication/unslop` | Any English prose the project ships |
+| `technical-writing` | `Communication/technical-writing` | Docs, ADRs, runbooks, PR bodies, commit messages |
+
+### Meta and automation
+
+| Skill | Path | Select when the task is... |
+|-------|------|----------------------------|
+| `arsenal-help` | `Meta/arsenal-help` | Extract with any multi-category set, so the project can route itself |
+| `correct` | `Meta/correct` | Agents keep repeating mistakes in this repo |
+| `reflect` | `Meta/reflect` | Sessions keep teaching things nobody writes down |
+| `setup-arsenal` | `Meta/setup-arsenal` | Extract whenever `codex-mode` goes, to set the model budget |
+| `monthly-skills-checkup` | `Meta/monthly-skills-checkup` | Keep in the arsenal. Rarely extracted into a project |
+| `automate-me` | `Meta/automate-me` | Capturing a person's working style as a skill |
+| the issue bot | `Automations/` | Unattended triage and reproduction. Needs a verification skill first |
+| `webhook-trigger-ui` | `Automations/webhook-trigger-ui` | A panel or button that kicks off an automation |
+
 ### Narrative and records
 
 | Skill | Path | Select when the task is... |
@@ -142,6 +241,33 @@ Use the trigger column to match. Paths are relative to the arsenal root.
 | `demo-video` | `script-qa` or `script-stakeholder` | Audience-specific script before rendering |
 | `script-qa` / `script-stakeholder` | `anti-slop`, `audio-clone` | Final polish and narration, only when delivering a finished video |
 | `topic-miner` | `stack-scout` | Only when topics depend on tool comparisons |
+| any skill that writes code | `comment-psycho` | Default for shipping code: the naming and typing gate the feature passes before it is called done |
+| `comment-psycho` | `ue-contracts-types`, `state-machine-architect` | The named state it demands is an interface, a data asset or a machine, not a comment |
+| `codex-mode` | all of `Principles/`, `setup-arsenal` | It cites the principles by name and reads the model rule file. Both are load-bearing |
+| `codex-mode` | `arsenal-help` | So the project can route itself without you naming the skill each time |
+| `architect` | `arena`, `cost-per-request` | Contested designs go to a bakeoff, and every shape gets priced before the pick |
+| `nexus-guard` | `ai-diff-review`, `cost-per-request`, `observability-baseline` | Three of its seven checks delegate to these. Without them the gate reports gaps |
+| `ai-diff-review` | `interrogate`, `blast-radius` | Tier 2 and above call both. Extracting the tiering alone leaves it unable to act |
+| `llm-evals` | `llm-threat-model`, `inference-tuning`, `cost-per-request` | An LLM feature needs the eval, the attack surface and the price. One without the others ships blind |
+| `llm-threat-model` | `llm-evals` | Its injection suite lives in the eval set, so the defense is re-tested on every change |
+| `inference-tuning` | `llm-evals`, `benchmark-checklist` | Tuning with no eval is rearranging the prompt until it feels better |
+| `cost-per-request` | `cloud-cost-forecast` | Priced designs become forecast lines. Unpriced ones become surprises |
+| `deploy-pipeline` | `nexus-guard`, `observability-baseline` | The gates the pipeline runs, and the signal it reads after deploy |
+| `iac-review` | `cost-per-request` | A plan's monthly delta is a design finding, not a month-end finding |
+| `create-verification-skill` | `maintain-verification-skill`, `Automations/` | The map rots in a week, and the issue bot cannot reproduce anything without it |
+| `figure-it-out` | `show-me-your-work`, `architect` | Work ambitious enough to need a designed playbook needs a trail and a shape |
+| `interrogate` | `arena` | It reuses arena's fan-out phases rather than defining its own |
+| `statechart` | `state-machine-architect`, `principle-separate-before-serializing-shared-state` | One designs the machine, one is usually what a violation is telling you |
+| `technical-writing` | `unslop` | It applies unslop to every document it touches |
+| `teach` | `how`, `why` | It runs both and weaves them. Alone it has nothing to weave |
+| `ketchup` | `bro` | It borrows bro's voice. Without it the catch-up reads as a status report |
+| `reflect` | `correct` | Anything a lint could enforce routes there instead of into more prose |
+| `clarity` | `architect` | Clear requirements first, then the shape. Designing against an unpinned requirement is the expensive order |
+| `heatmap` | `how`, `blast-radius` | The map locates the business logic, the others answer and protect it |
+| `feeling` | `script-stakeholder`, `demo-video`, `anti-slop` | The content pipeline picks the audience, feeling picks what they should feel |
+| `enjoyable-talk` | `bro`, `unslop` | Plain-language rescue and the slop catalog the register depends on |
+
+> Everyday recipes live in [`COMBOS.md`](COMBOS.md): two to four skills each, in order, with what you get.
 
 Mutually exclusive picks (choose one per deliverable):
 - `script-qa` vs `script-stakeholder`: audience decides (testers vs non-technical).

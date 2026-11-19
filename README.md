@@ -2,8 +2,13 @@
 
 Personal Claude Code skills, synced across machines.
 
-Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
-(`name`, `description`) followed by the instructions Claude loads on invocation.
+Each skill is a directory with a `SKILL.md`: YAML frontmatter (`name`, `description`) followed by
+the instructions Claude loads on invocation. Skills are grouped into category directories, each with
+a `MAP.md` that routes a task to its leaf. 130 skills.
+
+Start at [`ARSENAL-MAP.md`](ARSENAL-MAP.md) for the graph, [`COMBOS.md`](COMBOS.md) for the small sets
+that work well together, or [`codex-mode`](Agentic/codex-mode/SKILL.md), which is the operating style
+everything else hangs off.
 
 ## Skills
 
@@ -20,10 +25,134 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`notebook-cast`](notebook-cast/SKILL.md) | Group sources into a Gemini Notebook and fire a generation — podcast by default, plus video, reports, quizzes, slides. Async: reports the artifact id, never waits. |
 | [`aws-log-insights`](aws-log-insights/SKILL.md) | Forensic RCA on AWS logs: noise filtering, trace ID check, CloudWatch Logs Insights queries, metric filter and alarm. Can scan a root of repos to find a target's log groups. Output in Spanish. |
 
-> Working on a specific project? Use [`SKILL-SELECTOR.md`](SKILL-SELECTOR.md): it tells Claude how to
-> pick only the skills a task needs and extract them into the project, with a worked example.
+> **Two doors.** [`ARSENAL-MAP.md`](ARSENAL-MAP.md) is for finding the skill you need right now: the
+> category graph, routing by the shape of the work, and the three spines most tasks walk along. Each
+> category also has its own `MAP.md`. [`SKILL-SELECTOR.md`](SKILL-SELECTOR.md) is for extracting a
+> subset into a project. The [`arsenal-help`](Meta/arsenal-help/SKILL.md) skill is the map with
+> reasoning attached, for when a task could land in three places.
+
+### Agentic
+
+How work gets run. [`MAP`](Agentic/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`codex-mode`](Agentic/codex-mode/SKILL.md) | **The entry point.** The operating style: principles cited by name, deliberate subagents with a model per role, every design priced, every claim evidenced. Ships 12 playbooks (bug fix, feature, refactoring, perf, eval, shipping, incident, autonomous run) and the `worker.md` rules every spawned agent reads first. |
+| [`clarity`](Agentic/clarity/SKILL.md) | The requirements gate, and the one skill in the arsenal that stops you. Extracts every requirement as a testable statement, then blocks execution on anything ambiguous, inconsistent, or missing until the owner resolves it in writing. Draws the line against never-block: a wrong guess you can refactor is yours to make, a wrong guess that needs a rewrite is not. |
+| [`architect`](Agentic/architect/SKILL.md) | Two shapes before any code: types, signatures, boundaries, and the cost per request of each. Picks the one where state has one owner and callers know least. |
+| [`arena`](Agentic/arena/SKILL.md) | N candidates at one task on different models, a blind cross-judge, pick a base, graft the strongest parts of the losers. |
+| [`swarm`](Agentic/swarm/SKILL.md) | N workers over slices or racing one brief, drained into a single report. Declares the selection rule before spawning. |
+| [`figure-it-out`](Agentic/figure-it-out/SKILL.md) | Design the playbook when none fits: rigor scaled to the task, a hypothesis loop, an auditable decision trail. |
+| [`sharpen`](Agentic/sharpen/SKILL.md) | Make a task deeper, not bigger, then rewrite the prompt to ask for what a top practitioner would do. |
+| [`recall`](Agentic/recall/SKILL.md) | Rebuild working context across recent sessions plus the shared record, into a tagged thread capsule. |
+| [`ketchup`](Agentic/ketchup/SKILL.md) | Catch the human up in plain words and small visuals, then every call waiting on them with enough to decide. |
+| [`show-me-your-work`](Agentic/show-me-your-work/SKILL.md) | The decision trail for long or unattended runs: an append-only TSV, audited against what actually happened, reviewed by another model. |
+
+### Principles
+
+24 leaves the mode skill cites. Rules, not workflows. [`MAP`](Principles/MAP.md)
+
+Core: laziness-protocol, foundational-thinking, redesign-from-first-principles, attack-the-premise, subtract-before-you-add, minimize-reader-load, outcome-oriented-execution, experience-first, exhaust-the-design-space, build-the-lever. Architecture: model-the-domain, boundary-discipline, type-system-discipline, make-operations-idempotent, migrate-callers-then-delete-legacy-apis, separate-before-serializing-shared-state. Verification: prove-it-works, fix-root-causes, sequence-verifiable-units, test-behavior-not-implementation, explain-the-number. Delegation and meta: guard-the-context-window, never-block-on-the-human, encode-lessons-in-structure.
+
+### Verification
+
+Proof, not plausibility. [`MAP`](Verification/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`interrogate`](Verification/interrogate/SKILL.md) | Adversaries on different models try to break a change. A finding survives only when a run proves it. |
+| [`blast-radius`](Verification/blast-radius/SKILL.md) | What breaks elsewhere, beyond the diff. Finds the one fact the change is safe because of and proves it by running code. |
+| [`benchmark-checklist`](Verification/benchmark-checklist/SKILL.md) | Seven questions that vet a performance number: limiter, tuning, limits, errors, repeatability, relevance, and whether the work happened. |
+| [`tdd`](Verification/tdd/SKILL.md) | Failing test first where the path is cheap, and an honest alternative where it is not. |
+| [`statechart`](Verification/statechart/SKILL.md) | Model-check an ordering risk with TLA+, then show the bug as a path through states in the reader's words. |
+| [`create-verification-skill`](Verification/create-verification-skill/SKILL.md) | Generate the repo's own way to drive the real app: launch, doctor, drive, evidence, cleanup, plus a seeded feature map. |
+| [`maintain-verification-skill`](Verification/maintain-verification-skill/SKILL.md) | Keep that skill and its feature map honest: source wave per feature, one live pass driving every feature, one PR of proven corrections. |
+| [`create-formal-verification-skill`](Verification/create-formal-verification-skill/SKILL.md) | Prove an invariant where tests cannot reach, with the tool the question chooses, and leave it rerunnable. |
+| [`maintain-formal-verification-skill`](Verification/maintain-formal-verification-skill/SKILL.md) | Stop a stale model from looking like a proof. Says which failures are drift and which are bugs. |
+
+### Security
+
+Review and security at AI speed. [`MAP`](Security/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`nexus-guard`](Security/nexus-guard/SKILL.md) | The last gate before production. Seven checks (secrets, dependency risk, boundaries, AI-code review, cost delta, observability, rollback) and a ships / doesn't-ship verdict with the failing line named. |
+| [`ai-diff-review`](Security/ai-diff-review/SKILL.md) | Risk-tier an agent's diff 0 to 3 from its highest-risk hunk, apply the depth that tier earns, and hunt the eight failure modes specific to generated code. |
+| [`llm-threat-model`](Security/llm-threat-model/SKILL.md) | The six surfaces an LLM feature adds: prompt injection direct and indirect, exfiltration, tool and agent abuse, output handling, cost abuse, refusal paths. |
+
+### AIEngineering
+
+LLM features in production. [`MAP`](AIEngineering/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`llm-evals`](AIEngineering/llm-evals/SKILL.md) | The set, the grader, and the CI gate. Validates the grader against human labels before trusting a number, and reruns everything on a model change. |
+| [`inference-tuning`](AIEngineering/inference-tuning/SKILL.md) | Quality, latency and cost, with the knobs in order: caching, context, output, effort, model, then serving. One change at a time against the eval. |
+
+### FinOps
+
+Every design ships with its cost per request. [`MAP`](FinOps/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`cost-per-request`](FinOps/cost-per-request/SKILL.md) | Price a design before it ships: token split, cloud lines, the traffic assumption, and the levers in order from free to quality-trading. Judges cost per completed task, not per call. |
+| [`cloud-cost-forecast`](FinOps/cloud-cost-forecast/SKILL.md) | Explain the bill across AWS, Azure, GCP and Oracle by decomposing the delta into price, quantity, mix and waste, then forecast as a range and rank the actions. |
+
+### Platform
+
+Orchestration and deployment. [`MAP`](Platform/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`deploy-pipeline`](Platform/deploy-pipeline/SKILL.md) | Cut the minutes and make deploys boring: measure per stage, build once and promote, the right gate in the right place, rollback in one rehearsed command. |
+| [`iac-review`](Platform/iac-review/SKILL.md) | Review the plan, never the diff. Names every replacement and destroy, what it opens, the monthly delta, and what cannot be undone. |
+| [`observability-baseline`](Platform/observability-baseline/SKILL.md) | Debuggable from production without a redeploy: structured logs with a trace id, rate / errors / duration / saturation, traces across boundaries, alerts on symptoms. |
+
+### Communication
+
+Understanding, being understood, and the register you do it in. [`MAP`](Communication/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`how`](Communication/how/SKILL.md) | How does X work, answered from the code in a subagent so the walkthrough never fills the main thread. |
+| [`why`](Communication/why/SKILL.md) | Why is X this way, answered from the record. Marks inferences as inferences and treats a missing why as a finding. |
+| [`heatmap`](Communication/heatmap/SKILL.md) | Snapshot a repo into dated `snapshots/` folders: the tree annotated by role, a churn table, flow diagrams, and the business logic marked in amber hexagons. Two snapshots diff into an architecture drift report. |
+| [`teach`](Communication/teach/SKILL.md) | Runs `how` and `why` and weaves them into one plain account at the person's pace, building diagrams up one part at a time. |
+| [`forever-learning`](Communication/forever-learning/SKILL.md) | Master a technology or process at senior depth: the mechanism, the invariant it maintains and what it costs, the tradeoff with the alternative named, the failure envelope, the misconception you still hold, and the transfer. **No basics, ever.** |
+| [`feeling`](Communication/feeling/SKILL.md) | Name in one word what an artifact must make someone feel, and the feeling to avoid, then build it from mechanisms rather than adjectives. Checked by someone who never saw the intent. |
+| [`enjoyable-talk`](Communication/enjoyable-talk/SKILL.md) | The working register: warm, light, specific, candid, where warmth never costs information. Includes feedback worth having, and the banned habits that make an assistant tiring. |
+| [`bro`](Communication/bro/SKILL.md) | Say it again with no jargon. A translation, not a summary: every fact survives. |
+| [`in-your-own-words`](Communication/in-your-own-words/SKILL.md) | Restate the goal, the problem, and your assumptions before acting, then proceed. |
+| [`unslop`](Communication/unslop/SKILL.md) | Cut AI tells from English prose, including the engineering-specific ones: the unmeasured performance adjective, the status with no fact. |
+| [`technical-writing`](Communication/technical-writing/SKILL.md) | Docs, RFCs, ADRs, runbooks, PR bodies and commits: pick the mode, write to the reader, leave no sentence open to two readings. |
+
+### Meta
+
+Skills about the skills. [`MAP`](Meta/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`monthly-skills-checkup`](Meta/monthly-skills-checkup/SKILL.md) | The monthly pass. Asks the target model, the depth and the rewrite appetite, scores every skill on six axes, rewrites what the new capabilities made weaker (starting with scaffolding a stronger model no longer needs), proposes the gaps, verifies, and logs the run. |
+| [`arsenal-help`](Meta/arsenal-help/SKILL.md) | Route a task to the right skill, and say plainly when none fits. |
+| [`setup-arsenal`](Meta/setup-arsenal/SKILL.md) | One file that sets the model and effort per role, overriding every skill default. Names what degrades at each budget. |
+| [`correct`](Meta/correct/SKILL.md) | Make a repeated mistake impossible: architecture, then types, then a lint whose error names the fix, then a test, docs last. Proves each check fails on a real past mistake. |
+| [`reflect`](Meta/reflect/SKILL.md) | Mine the session for durable learnings and route each to a concrete skill edit, with approval before editing. |
+| [`automate-me`](Meta/automate-me/SKILL.md) | Turn how you work into a mode skill, from mined evidence plus a short structured interview. |
+
+### Automations
+
+Unattended work, which means the fences are the content. [`MAP`](Automations/MAP.md)
+
+| Skill | Purpose |
+|-------|---------|
+| [`setup-issue-bot`](Automations/setup-issue-bot/SKILL.md) | The config both issue automations read, the fences they hold, and the verification-skill prerequisite without which a repro is just a theory. |
+| [`triage-issue-reports`](Automations/triage-issue-reports/SKILL.md) | One report in, one threaded verdict out: evidence before words, cause-aware routing, dedupe, fail-closed ticket creation. |
+| [`reproduce-and-fix-issues`](Automations/reproduce-and-fix-issues/SKILL.md) | Reproduce against the real app, check whether it is already fixed, then a bounded draft PR with before-and-after proof. |
+| [`webhook-trigger-ui`](Automations/webhook-trigger-ui/SKILL.md) | A page that wakes an agent or a workflow, with the secret server-side, an idempotency key per click, and nothing exposed publicly. |
 
 ### 3DModeling
+
+[`MAP`](3DModeling/MAP.md)
 
 | Skill | Purpose |
 |-------|---------|
@@ -31,6 +160,8 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 | [`mixamo-auto-rig-mapper`](3DModeling/mixamo-auto-rig-mapper/SKILL.md) | Auto-rig humanoid meshes (Mixamo, Tripo, Meshy), choose the animation set, import and retarget in UE5 with IK Rig and IK Retargeter. |
 
 ### Audio
+
+[`MAP`](Audio/MAP.md)
 
 | Skill | Purpose |
 |-------|---------|
@@ -41,17 +172,25 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 
 ### Graphics2D
 
+[`MAP`](Graphics2D/MAP.md)
+
 | Skill | Purpose |
 |-------|---------|
 | [`sprite-sheet-packer`](Graphics2D/sprite-sheet-packer/SKILL.md) | Pack frames into SubUV flipbooks or trimmed atlases: layout, padding, ImageMagick/Pillow/TexturePacker commands, Niagara SubUV setup, optimization. |
 
 ### Development
 
+Code craft at the keyboard. [`MAP`](Development/MAP.md)
+
 | Skill | Purpose |
 |-------|---------|
 | [`state-machine-architect`](Development/state-machine-architect/SKILL.md) | Design and implement finite state machines in any language: when to use one, transition tables, hierarchical and parallel variants, async-safe TypeScript reference, anti-patterns, testing. |
+| [`comment-psycho`](Development/comment-psycho/SKILL.md) | Ship features with zero comments: every fact a comment would carry is forced into a name or a type. The exemption list, the five moves that kill a comment, naming and typing laws per language, an adversarial reviewer pass, and a ships/doesn't-ship gate. |
+| [`typescript-best-practices`](Development/typescript-best-practices/SKILL.md) | Make the compiler do the work: discriminated unions, branded primitives, boundary parsing, exhaustiveness, no `as`, no enums, and the React and Next.js specifics. |
 
 ### Videogames
+
+35 skills, mostly Unreal Engine 5. The [`MAP`](Videogames/MAP.md) groups them by job.
 
 | Skill | Purpose |
 |-------|---------|
@@ -88,19 +227,47 @@ Each directory is one skill, defined by a `SKILL.md` with YAML frontmatter
 
 ### Narrative
 
+[`MAP`](Narrative/MAP.md)
+
 | Skill | Purpose |
 |-------|---------|
 | [`the-watcher`](Narrative/the-watcher/SKILL.md) | Turn the real record of a build into an epic, funny chronicle: mine git, the Claude Code session transcript, engine logs and timestamps into a dated timeline, stage it as acts where every chapter is a real obstacle with its real number, and close with what is honestly still unverified. |
 
 ## Install on a new machine
 
-This repo *is* the personal skills directory. Clone it into place:
+**Do not clone this into `~/.claude/skills`.** Skill loaders look for `<name>/SKILL.md` one level
+under the skills root, and the categories here put every skill one level deeper. Clone the repo
+wherever you keep projects, then generate the flat view and link it:
 
 ```bash
-git clone git@codexmaker:CodeXMakerCompany/skills-arsenal.git ~/.claude/skills
+git clone git@codexmaker:CodeXMakerCompany/skills-arsenal.git
 ```
 
-If `~/.claude/skills` already exists, clone elsewhere and symlink it instead.
+```bash
+cd skills-arsenal && ./bin/skills.sh build && ./bin/skills.sh install
+```
+
+`build` writes `dist/skills/`, one link per skill, flat, validated. `install` points
+`~/.claude/skills` at it, moving any existing directory aside to a timestamped backup first.
+On Windows it uses directory junctions, which need no admin rights; elsewhere, symlinks.
+
+```bash
+./bin/skills.sh status
+```
+
+| Command | What it does |
+|---------|--------------|
+| `check` | Validates every `SKILL.md`: frontmatter present, `name` matches its directory, description non-empty, and no two skills share a name. Exits non-zero on any problem. |
+| `build` | Runs `check`, then regenerates `dist/skills/` plus a `.manifest.tsv` of name, category and source path. |
+| `install` | Points `~/.claude/skills` at `dist/skills`. Takes `--target DIR` for a project's `.claude/skills` or another agent's skill directory. |
+| `status` | Repo count, dist count, and what is actually installed. Says when `dist/` is stale. |
+
+Add `--dry-run` to `build` or `install` to see what would change.
+
+**After editing a skill**, nothing to do: the links point at the real directories, so edits are live
+immediately. **After adding, renaming, or deleting one**, rerun `./bin/skills.sh build`.
+
+`dist/` is generated and gitignored. The categorized tree is the only source of truth.
 
 ## Base layer
 

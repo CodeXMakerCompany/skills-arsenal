@@ -25,3 +25,6 @@ desktop.ini
 .idea/
 *.swp
 synced
+
+# Generated flat skill view (bin/skills.sh build)
+dist/
