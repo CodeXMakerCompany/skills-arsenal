@@ -1,6 +1,6 @@
 # Arsenal map
 
-How to travel through 130 skills without reading them. Start here, drop into a category's `MAP.md`, stop at the leaf.
+How to travel through 132 skills without reading them. Start here, drop into a category's `MAP.md`, stop at the leaf.
 
 Three other doors. [`COMBOS.md`](COMBOS.md) has the small sets that work well together, which is what you want most days. [`SKILL-SELECTOR.md`](SKILL-SELECTOR.md) is for extracting a subset into a project. The [`arsenal-help`](Meta/arsenal-help/SKILL.md) skill is this map with reasoning attached, for when a task could land in three places.
 
@@ -33,6 +33,7 @@ Three other doors. [`COMBOS.md`](COMBOS.md) has the small sets that work well to
    enjoyable-talk        show-me-your-work          create/maintain-*
    unslop  in-your-own-words
    technical-writing
+   business-rules-heatmap
          |                     |                     |
          +----------+----------+----------+----------+
                     |                     |
@@ -69,12 +70,14 @@ Three other doors. [`COMBOS.md`](COMBOS.md) has the small sets that work well to
 | A ticket, spec or request just arrived | [`Agentic`](Agentic/MAP.md) | `clarity`, before anything else |
 | Anything non-trivial, run properly | [`Agentic`](Agentic/MAP.md) | `codex-mode`, then its playbook |
 | Understanding code that exists | [`Communication`](Communication/MAP.md) | `how` for mechanism, `why` for rationale |
-| Understanding a whole unfamiliar repo | [`Communication`](Communication/MAP.md) | `heatmap`, which marks the business logic |
+| Understanding a whole unfamiliar repo | [`Communication`](Communication/MAP.md) | `heatmap`, the dated communication graph in `.snapshots/` |
+| Which rules the app enforces over and over | [`Communication`](Communication/MAP.md) | `business-rules-heatmap` |
 | Explaining it to a person | [`Communication`](Communication/MAP.md) | `teach`, or `bro` to translate |
 | Mastering a technology at senior depth | [`Communication`](Communication/MAP.md) | `forever-learning`. No basics |
 | Deciding what an artifact should make someone feel | [`Communication`](Communication/MAP.md) | `feeling`, before you build it |
 | How to talk, and how to give real feedback | [`Communication`](Communication/MAP.md) | `enjoyable-talk` |
 | Deciding a shape before code | [`Agentic`](Agentic/MAP.md) | `architect`, `arena` if contested |
+| Creating or fixing a Kiro custom agent | [`Agentic`](Agentic/MAP.md) | `kiro-agent-creator` |
 | Writing or changing code | [`Development`](Development/MAP.md) | `typescript-best-practices`, `comment-psycho` |
 | The rule behind a judgment call | [`Principles`](Principles/MAP.md) | the 24 leaves, cited by name |
 | Proving it works, or breaking it | [`Verification`](Verification/MAP.md) | `interrogate`, `blast-radius`, `tdd` |
@@ -94,7 +97,7 @@ Three other doors. [`COMBOS.md`](COMBOS.md) has the small sets that work well to
 
 | Category | Count | What it owns | Its map |
 |---|---|---|---|
-| `Agentic` | 10 | How work gets run: the mode, playbooks, parallelism, memory, and the requirements gate | [MAP](Agentic/MAP.md) |
+| `Agentic` | 11 | How work gets run: the mode, playbooks, parallelism, memory, the requirements gate, and Kiro agents | [MAP](Agentic/MAP.md) |
 | `Principles` | 24 | The rules the mode cites. Leaves, not workflows | [MAP](Principles/MAP.md) |
 | `Verification` | 9 | Proof: adversarial review, blast radius, tests, model checking | [MAP](Verification/MAP.md) |
 | `Development` | 3 | Code craft at the keyboard | [MAP](Development/MAP.md) |
@@ -102,7 +105,7 @@ Three other doors. [`COMBOS.md`](COMBOS.md) has the small sets that work well to
 | `AIEngineering` | 2 | LLM features in production: evals, inference tuning | [MAP](AIEngineering/MAP.md) |
 | `FinOps` | 2 | Cost per request, and the bill it rolls up into | [MAP](FinOps/MAP.md) |
 | `Platform` | 3 | Pipelines, infrastructure, observability | [MAP](Platform/MAP.md) |
-| `Communication` | 11 | Understanding, being understood, and the register you do it in | [MAP](Communication/MAP.md) |
+| `Communication` | 12 | Understanding, being understood, and the register you do it in | [MAP](Communication/MAP.md) |
 | `Meta` | 6 | Skills about the skills | [MAP](Meta/MAP.md) |
 | `Automations` | 4 | Unattended work with fences | [MAP](Automations/MAP.md) |
 | `Videogames` | 35 | Unreal Engine, 3D and 2D | [MAP](Videogames/MAP.md) |

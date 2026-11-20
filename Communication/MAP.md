@@ -6,7 +6,8 @@ Understanding things, being understood, and the register you do it in. Half of f
 Communication/
 ├── how/                   how does X work, from the code
 ├── why/                   why is X this way, from the record
-├── heatmap/               snapshot a repo, mark the business logic, diff the drift
+├── heatmap/               snapshot how the app communicates into .snapshots/, diff the next change onto that graph
+├── business-rules-heatmap/  the rules the app repeats, ranked, snapshotted the same way
 ├── teach/                 explain this work to a person, at their pace
 ├── forever-learning/      master a technology at senior depth. No basics
 ├── bro/                   say it again with no jargon
@@ -25,7 +26,7 @@ Each pair looks interchangeable and is not. Picking wrong wastes the work.
 
 **`teach` and `forever-learning`.** `teach` explains *this codebase's work* to a person and runs `how` and `why` underneath. `forever-learning` masters *a technology or process* at senior depth and deliberately refuses the basics. One is about your system, the other about the world.
 
-**`how` and `heatmap`.** `how` answers one question in conversation. `heatmap` produces dated artifacts in `snapshots/` for a whole repo, with the business logic marked, so two runs diff into an architecture drift report.
+**`how` and `heatmap`.** `how` answers one question in conversation. `heatmap` writes a dated snapshot under `.snapshots/NOV-19-5.16PM/` of how the app communicates and what that shape trades off. The next run uses that snapshot as the base and updates the graph from `git diff`.
 
 **`feeling` and `enjoyable-talk`.** `feeling` is the emotion an *artifact* transmits, decided before you build it. `enjoyable-talk` is the register of the *conversation*. One is produced, the other is lived.
 
@@ -35,7 +36,8 @@ Each pair looks interchangeable and is not. Picking wrong wastes the work.
 |---|---|
 | New to a subsystem, about to change it | `how` |
 | New to a whole repository | `heatmap`, then `how` for the specifics |
-| Where is the business logic? | `heatmap` |
+| How does the app communicate, and what changed since the last map? | `heatmap` |
+| Which rules does this app enforce over and over? | `business-rules-heatmap` |
 | A threshold or magic number someone must now change | `why` |
 | A person needs to understand this change | `teach` |
 | You half-know a technology and want to own it | `forever-learning` |
@@ -62,7 +64,8 @@ Talk follows the person. `teach`, `forever-learning`, `bro`, `enjoyable-talk` an
 - **`forever-learning` starts where the quickstart stopped.** The invariant and the failure envelope, never the syntax.
 - **`feeling` is structural.** It decides what you show first and what you cut, so it runs before you build, not after.
 - **`enjoyable-talk` never costs information.** If the warm version is vaguer, ship the plain one.
-- **`heatmap` commits its snapshots.** The value is in the diff, and a gitignored snapshot cannot be compared.
+- **`heatmap` writes `.snapshots/<MON-DD-H.MMAMPM>/`.** The previous snapshot is the base. `insights.md` in the new folder says what `git diff` changed in the flow. Do not commit unless asked.
+- **`business-rules-heatmap` uses the same folders and the same diff.** It ranks repeated rules into `rules.md`. It never continues from a communication snapshot, and `heatmap` never continues from a rules snapshot.
 
 ## Not here
 

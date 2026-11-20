@@ -17,7 +17,8 @@ Agentic/
 ├── sharpen/                 make a task deeper, not bigger
 ├── recall/                  rebuild context across recent sessions
 ├── ketchup/                 catch the human up, and list what waits on them
-└── show-me-your-work/       the decision trail for long or unattended runs
+├── show-me-your-work/       the decision trail for long or unattended runs
+└── kiro-agent-creator/      Kiro custom agents: least privilege, the right path, sub-agent wiring
 ```
 
 ## Start here
@@ -38,6 +39,7 @@ Agentic/
 | Starting work and you have lost the thread | `recall` |
 | The human stepped away and is back | `ketchup` |
 | A run nobody is watching | `show-me-your-work`, from the first decision |
+| Creating, fixing or wiring a Kiro custom agent | `kiro-agent-creator` |
 
 ## clarity is the one skill here that stops you
 

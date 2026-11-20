@@ -1,141 +1,173 @@
 ---
 name: heatmap
-description: Snapshot a repository into snapshots/ with an annotated structure, a flow diagram, and the business logic marked so it is impossible to miss. Dated, so two snapshots diff into an architecture drift report. Use for /heatmap, "map this repo", "where is the business logic", "mapea este repo", onboarding into an unfamiliar codebase, or before a refactor.
+description: >-
+  Check up the current repo and snapshot how the app communicates, the
+  trade-offs of that shape, and a high-level graph of its interactions into
+  .snapshots/NOV-19-5.16PM/. Uses the previous heatmap as the base, runs git
+  diff to see which modules and files changed, updates the flow into a new
+  snapshot, and writes the update insights to insights.md in that folder.
+  Use for /heatmap, "heatmap", "map this repo", "communication through the
+  app", "interaction graph", "mapea este repo", onboarding into an unfamiliar
+  codebase, or before a refactor.
 ---
 
 # Heatmap
 
-A repository's folder tree tells you how it was organized. It does not tell you **where the money is** — the code that would be different at a competitor, the rules people actually pay for.
+Snapshot how this repo communicates. One folder per run, under `.snapshots/` in the repo being mapped. The folder name is the local time of the run:
 
-This skill produces that, as dated artifacts in `snapshots/`: the structure annotated by role, the flow as a diagram, and the business logic visually marked.
+```
+NOV-19-5.16PM
+```
 
-**Why dated snapshots instead of a doc:** two snapshots diff. A doc rots silently; a snapshot from three months ago compared against today is an architecture drift report nobody had to write.
+Month is three uppercase English letters, day and hour have no leading zero, minutes are two digits, `AM`/`PM` is uppercase with no space.
 
----
+The snapshot freezes the logic as it is at that time. The next run reads the previous snapshot and edits it. It does not redraw the repo from scratch.
 
 ## Output
 
 ```
-snapshots/
-└── 2026-11-18-orders-service/
-    ├── README.md            how to read this, what was inferred, what was not traced
-    ├── structure.md         the tree, annotated by role, with the churn table
-    ├── flow.md              the diagrams, business logic marked
-    └── business-logic.md    the ranked list, each with file:line and the rule it implements
+.snapshots/
+└── NOV-19-5.16PM/
+    ├── flow.md        the interaction graph and the logic it freezes, plus trade-offs
+    └── insights.md    what the git diff changed in that flow
 ```
 
-One directory per run, named `<date>-<scope>`. Commit them: the value is in the diff, and a gitignored snapshot cannot be compared. They are documentation, not build output.
+Write both files in the repo the user has open. Do not commit unless they ask. If `.snapshots/` is gitignored, still write there and say so in `insights.md`: another clone will not have this base.
 
----
-
-## 1. Establish scope and the product question
-
-Scope first: the whole repo, one service, or one flow. A whole-monorepo heatmap in one diagram is unreadable, so for a monorepo do one snapshot per deployable.
-
-Then the question that makes the rest possible: **what does this product actually sell, and what rule decides what a customer gets?** Read the README, the pricing page, the main entity names. You cannot find business logic without knowing what the business is, and this one question saves an hour of guessing.
-
-## 2. Map the structure by role, not by folder
-
-Walk the tree and label each directory with what it *is*, not what it is called:
-
-| Role | What lands here |
-|---|---|
-| **entry** | HTTP handlers, route files, CLI commands, queue consumers, cron entries, page components |
-| **domain** | The rules. Pricing, eligibility, scoring, state transitions, permissions, money math |
-| **data** | Models, repositories, queries, migrations, schema |
-| **integration** | Clients for other services, SDK wrappers, webhook receivers |
-| **plumbing** | DI wiring, config, logging, serialization, middleware, error mappers |
-| **generated** | Generated clients, protobuf output, build artifacts, anything with a do-not-edit banner |
-| **test** | Fixtures, factories, harnesses |
-
-Write that into `structure.md` as the tree with a role tag and a one-line purpose per directory. **A directory you cannot label is a finding** and goes in the open questions: it is usually either dead or the most important thing in the repo.
-
-Add the churn table, which is evidence rather than opinion:
+## Name the folder
 
 ```bash
-git log --format= --name-only --since='12 months ago' \
-  | grep -v '^$' | sort | uniq -c | sort -rn | head -30
+LC_ALL=C printf '%s-%s-%s.%s%s\n' \
+  "$(date +%b | tr '[:lower:]' '[:upper:]')" \
+  "$(date +%-d)" \
+  "$(date +%-I)" \
+  "$(date +%M)" \
+  "$(date +%p)"
 ```
 
-The files that change most often are where the business actually lives, or where the design is wrong. Both are worth the reader's attention, and the distinction is usually obvious once you open them.
+If that directory already exists, append `-2`, then `-3`. Never overwrite a snapshot.
 
-## 3. Find the business logic
+## Pick the base
 
-**The test: would this code be different at a competitor who sells the same thing?** If yes it is business logic. If a different company could use the file unchanged, it is plumbing.
+Look in `.snapshots/` for directories that contain `flow.md`. The base is the one whose `captured-at` is latest. Folder names omit the year and wrap every twelve hours, so do not sort them as text. If a snapshot has no `captured-at`, use its directory mtime.
 
-Business logic looks like: pricing and discounts, eligibility and entitlement, tax and fees, state machines over a domain entity, permission rules, scoring and ranking, quota and limit enforcement, retry and refund policy, SLA calculations, anything with money or dates in it.
+No `flow.md` anywhere means this run is the baseline. Say that in `insights.md` and build the graph from the code.
 
-Plumbing looks like: CRUD passthrough, framework glue, serialization, retry mechanics with no policy, logging, config loading, generated code.
+## Diff before drawing
 
-Four heuristics that locate it fast, in order of yield:
+Record `git rev-parse HEAD` and whether the worktree is dirty (`git status --porcelain`).
+
+When a base exists, read its `flow.md` completely, then:
 
 ```bash
-# 1. Domain vocabulary. Tune the words to this product.
-grep -rilE 'eligib|discount|pricing|price|tax|invoice|refund|quota|limit|approve|score|tier|commission|penalt|expir' --include='*.ts' --include='*.py' src/
-
-# 2. Branch density with no framework import. High branching plus no framework
-#    is almost always a rule, not a wrapper.
-grep -cE '\b(if|switch|case|elif)\b' <file>
-
-# 3. Money, percent and date literals.
-grep -rnE '[0-9]+\.[0-9]{2}|0\.[0-9]+ *\*|days?|months?|cents' --include='*.ts' src/
-
-# 4. The most-tested files. People write the most tests around the rules
-#    they are afraid of breaking.
+git diff --name-status <base-sha> HEAD
+git diff --stat <base-sha> HEAD
+git diff --name-status HEAD
 ```
 
-Then **read the candidates**, because every heuristic has false positives. A file that greps for "price" and only formats a currency string is plumbing.
+The third command is the uncommitted work. Ignore paths under `.snapshots/`. Group the rest by module: the app, package, or top-level directory that owns the file.
 
-Rank the confirmed list by what breaks if it is wrong: money and entitlement first, then correctness of output, then convenience. For each, record `file:line`, the rule in one plain sentence, and what breaks if it is wrong. That sentence is the deliverable, not the file path.
+If the base SHA is missing or not in this history, keep the previous `flow.md` as the base anyway and diff with `git log --since=<captured-at> --name-status`. Say in `insights.md` that the SHA could not be used.
 
-## 4. Draw the flow
+If no product file differs from the base, committed or not, stop. Tell the user the latest heatmap still describes this tree. Do not write a duplicate snapshot.
 
-One diagram per flow, **not one diagram for the repo**. Pick the two or three flows that matter: the main request path, the main write path, the background job.
+On a real diff, read the changed files and the hunks that add, remove, or rewire a call, event, query, or job. Carry every untouched node, edge, and trade-off forward unchanged.
 
-Rules: 20 nodes maximum, the entry point at the top, labels in the reader's words, and business logic marked so it is impossible to miss. For three or more moving parts, build it up across two or three diagrams rather than one dense one.
+## What the graph is
 
-Marking in Mermaid: a hexagon node plus a thick colored stroke, with a legend. That is the readable equivalent of circling it on a whiteboard.
+One high-level graph of communication through the app. Nodes are modules, apps, stores, queues, and external systems. Edges are calls, events, reads, and writes, labeled with what crosses. A function is not a node.
+
+Keep it under 25 nodes. A monorepo gets one diagram of how the deployables talk to each other, then one diagram per deployable only when the overview cannot say what crosses the boundary.
+
+Mark each edge `traced` or `inferred`. Traced means the code was read. Inferred means the name suggested it.
+
+Under the diagram, the current logic in a few paragraphs: the path a real action takes, who owns the state, and where a message stops being a request and becomes a record. Cite `file:line` for each claim.
+
+Then the trade-offs, one per boundary that matters. Name the choice, what it costs, and what it buys. Only trade-offs visible in this repo. On an update, rewrite a trade-off only when the diff touched that boundary.
 
 ```mermaid
 flowchart TD
-    A[POST /orders] --> B[parseOrderRequest]
-    B --> C{{applyPricingRules}}
-    C --> D{{checkInventoryEligibility}}
-    D -->|eligible| E[persistOrder]
-    D -->|rejected| F[respond 409]
-    E --> G[publish OrderCreated]
-    G --> H[email worker]
-
-    classDef biz stroke:#d97706,stroke-width:4px,fill:#fffbeb,color:#000
-    class C,D biz
+    Web[web app] -->|submit order| API[orders API]
+    API -->|price quote| Pricing[pricing]
+    API -->|persist| DB[(orders db)]
+    API -->|OrderCreated| Bus[event bus]
+    Bus -->|fulfill| Worker[fulfillment worker]
 ```
 
-> **Legend.** Thick amber hexagons are business logic: the rules that would differ at a competitor. Everything else is transport, persistence, or glue.
+## flow.md
 
-Under each diagram, one line per marked node: the rule it implements and its `file:line`.
+```markdown
+---
+captured-at: 2026-11-19T17:16:00-06:00
+git-sha: <full sha>
+dirty: false
+base: .snapshots/NOV-19-4.02PM
+---
 
-## 5. Be honest in the README
+# Flow
 
-The snapshot is only useful if the reader knows what to trust:
+<one sentence: what this repo communicates in order to do>
 
-- **Read against inferred.** Which paths you traced through the code and which you deduced from names. A deduced edge is a guess with a nice arrow on it.
-- **Not traced.** The flows you skipped and why. "The admin surface and the data export are not in this snapshot."
-- **Open questions.** Directories you could not label, business logic you suspect but could not locate, the file with 400 commits and no tests.
-- **The commit.** The SHA this snapshot describes, so the next reader knows how stale it is.
+## Graph
 
-## 6. Re-run and diff
+<mermaid>
 
-Re-run on a cadence or before a refactor, then compare:
+Edges traced: ...
+Edges inferred: ...
+Not in this snapshot: ...
 
-```bash
-diff -ru snapshots/2026-08-02-orders-service snapshots/2026-11-18-orders-service
+## Current logic
+
+<the frozen path, with file:line>
+
+## Trade-offs
+
+- **<boundary>.** <choice>. Costs <cost>. Buys <gain>.
 ```
 
-What the diff tells you, and this is the real payoff: business logic that leaked into a handler, a new integration nobody mentioned, a domain directory that grew a framework import, a rule that moved into generated code. Those are the findings that never show up in a PR review because each individual step looked fine.
+`base` is omitted on the first snapshot. `captured-at` is ISO-8601 with the local offset. `git-sha` is the full HEAD. `dirty: true` means uncommitted work is part of the picture.
 
-## Related
+## insights.md
 
-- [`how`](../how/SKILL.md) answers a question about one subsystem in conversation. This produces durable artifacts for a whole repo.
-- [`why`](../why/SKILL.md) for why a structure is shaped that way, which the code cannot tell you.
-- [`blast-radius`](../../Verification/blast-radius/SKILL.md) once you know where the business logic is and want to change it.
-- [`principle-model-the-domain`](../../Principles/principle-model-the-domain/SKILL.md) is usually what a messy heatmap is pointing at: rules scattered across handlers instead of living in one structure.
+This file is about the update, not a second copy of the graph.
+
+```markdown
+# Insights
+
+Base: `.snapshots/NOV-19-4.02PM` @ `<short sha>`
+This snapshot: `NOV-19-5.16PM` @ `<short sha>`
+Diff: `git diff <base-sha> HEAD` plus uncommitted changes
+
+## Modules and files
+
+- `services/orders` — `handler.go`, `pricing_client.go` (modified)
+
+## Flow updates
+
+- Added: orders API → pricing, quote request
+- Removed: ...
+- Relabeled: ...
+- Carried forward unchanged: web app, orders db, event bus, fulfillment worker
+
+## Trade-off shifts
+
+- **orders API → pricing.** The quote is now a remote call. A pricing outage rejects checkout instead of using a stale local table.
+```
+
+First snapshot, the whole file is:
+
+```markdown
+# Insights
+
+No previous heatmap. This snapshot is the baseline.
+HEAD: `<full sha>`
+Dirty: false
+```
+
+Every line in the update sections has to come from the diff or from a file the diff touched. A module with no communication change is listed under modules and then omitted from flow updates.
+
+## Tell the user
+
+Reply with the new folder path, whether it was a baseline or an update, the modules the diff touched, and the graph. The files are the record. The reply is the checkup.
+
+For the rules the app enforces over and over, run `business-rules-heatmap`. This skill does not rank those.

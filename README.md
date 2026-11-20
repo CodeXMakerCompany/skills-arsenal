@@ -4,7 +4,7 @@ Personal Claude Code skills, synced across machines.
 
 Each skill is a directory with a `SKILL.md`: YAML frontmatter (`name`, `description`) followed by
 the instructions Claude loads on invocation. Skills are grouped into category directories, each with
-a `MAP.md` that routes a task to its leaf. 130 skills.
+a `MAP.md` that routes a task to its leaf. 132 skills.
 
 Start at [`ARSENAL-MAP.md`](ARSENAL-MAP.md) for the graph, [`COMBOS.md`](COMBOS.md) for the small sets
 that work well together, or [`codex-mode`](Agentic/codex-mode/SKILL.md), which is the operating style
@@ -47,6 +47,7 @@ How work gets run. [`MAP`](Agentic/MAP.md)
 | [`recall`](Agentic/recall/SKILL.md) | Rebuild working context across recent sessions plus the shared record, into a tagged thread capsule. |
 | [`ketchup`](Agentic/ketchup/SKILL.md) | Catch the human up in plain words and small visuals, then every call waiting on them with enough to decide. |
 | [`show-me-your-work`](Agentic/show-me-your-work/SKILL.md) | The decision trail for long or unattended runs: an append-only TSV, audited against what actually happened, reviewed by another model. |
+| [`kiro-agent-creator`](Agentic/kiro-agent-creator/SKILL.md) | Create Kiro custom agents (IDE 1.0 / CLI V3) with least privilege, write them to `.kiro/agents/` or `~/.kiro/agents/`, and wire sub-agents into an orchestrator. Ships a script that creates, validates, wires and lists. |
 
 ### Principles
 
@@ -116,7 +117,8 @@ Understanding, being understood, and the register you do it in. [`MAP`](Communic
 |-------|---------|
 | [`how`](Communication/how/SKILL.md) | How does X work, answered from the code in a subagent so the walkthrough never fills the main thread. |
 | [`why`](Communication/why/SKILL.md) | Why is X this way, answered from the record. Marks inferences as inferences and treats a missing why as a finding. |
-| [`heatmap`](Communication/heatmap/SKILL.md) | Snapshot a repo into dated `snapshots/` folders: the tree annotated by role, a churn table, flow diagrams, and the business logic marked in amber hexagons. Two snapshots diff into an architecture drift report. |
+| [`heatmap`](Communication/heatmap/SKILL.md) | Snapshot how the app communicates, its trade-offs, and a high-level interaction graph into `.snapshots/NOV-19-5.16PM/`. The previous snapshot is the base; `git diff` updates the flow, and `insights.md` records what changed. |
+| [`business-rules-heatmap`](Communication/business-rules-heatmap/SKILL.md) | Snapshot the most common business rules by repeated patterns — shared policies, copied comparisons, schema constraints, status transitions — into the same `.snapshots/` folders. The previous rules snapshot is the base; `git diff` updates the ranking, and `insights.md` records what changed. |
 | [`teach`](Communication/teach/SKILL.md) | Runs `how` and `why` and weaves them into one plain account at the person's pace, building diagrams up one part at a time. |
 | [`forever-learning`](Communication/forever-learning/SKILL.md) | Master a technology or process at senior depth: the mechanism, the invariant it maintains and what it costs, the tradeoff with the alternative named, the failure envelope, the misconception you still hold, and the transfer. **No basics, ever.** |
 | [`feeling`](Communication/feeling/SKILL.md) | Name in one word what an artifact must make someone feel, and the feeling to avoid, then build it from mechanisms rather than adjectives. Checked by someone who never saw the intent. |

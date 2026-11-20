@@ -129,6 +129,7 @@ Almost every project wants `codex-mode` plus the handful of leaves its playbooks
 | `recall` | `Agentic/recall` | Resuming work across sessions |
 | `ketchup` | `Agentic/ketchup` | Catching a human up after they stepped away |
 | `show-me-your-work` | `Agentic/show-me-your-work` | Long or unattended runs needing an audit trail |
+| `kiro-agent-creator` | `Agentic/kiro-agent-creator` | Creating, validating or wiring Kiro custom agents in `.kiro/agents/` |
 | all 24 principles | `Principles/` | Extract whole. `codex-mode` cites them by name |
 
 ### Verification and proof
@@ -189,7 +190,8 @@ Almost every project wants `codex-mode` plus the handful of leaves its playbooks
 | Skill | Path | Select when the task is... |
 |-------|------|----------------------------|
 | `how` / `why` | `Communication/how`, `Communication/why` | Onboarding into unfamiliar code, or recovering a rationale |
-| `heatmap` | `Communication/heatmap` | A repo nobody has mapped, or business logic nobody can locate |
+| `heatmap` | `Communication/heatmap` | A repo nobody has mapped, or a communication graph that should be updated from the last snapshot |
+| `business-rules-heatmap` | `Communication/business-rules-heatmap` | The rules an app enforces in more than one place, or a rules ranking that should be updated from the last snapshot |
 | `teach` | `Communication/teach` | Explaining a subsystem or a change to a person |
 | `forever-learning` | `Communication/forever-learning` | A technology the team half-knows and keeps getting wrong at depth |
 | `feeling` | `Communication/feeling` | The project ships anything a human reacts to: UI, demos, video, updates |
@@ -263,7 +265,8 @@ Almost every project wants `codex-mode` plus the handful of leaves its playbooks
 | `ketchup` | `bro` | It borrows bro's voice. Without it the catch-up reads as a status report |
 | `reflect` | `correct` | Anything a lint could enforce routes there instead of into more prose |
 | `clarity` | `architect` | Clear requirements first, then the shape. Designing against an unpinned requirement is the expensive order |
-| `heatmap` | `how`, `blast-radius` | The map locates the business logic, the others answer and protect it |
+| `heatmap` | `how`, `blast-radius` | The snapshot shows how the app communicates. The others answer one path and protect a change to it |
+| `business-rules-heatmap` | `heatmap` | The communication map and the repeated rules are different snapshots. Pull the other in only when the task asks for both |
 | `feeling` | `script-stakeholder`, `demo-video`, `anti-slop` | The content pipeline picks the audience, feeling picks what they should feel |
 | `enjoyable-talk` | `bro`, `unslop` | Plain-language rescue and the slop catalog the register depends on |
 

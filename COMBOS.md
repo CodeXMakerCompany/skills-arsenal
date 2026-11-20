@@ -18,7 +18,11 @@ Where things stand and what the next move is, then straight into the playbook th
 
 **Dropped into an unfamiliar repo**
 `heatmap` → `how`
-The map and the business logic marked, then the specific question you actually had.
+The snapshot of how the app communicates, then the specific question you actually had.
+
+**Where the rules repeat**
+`business-rules-heatmap`
+The decisions the app enforces in more than one place, ranked, in a snapshot the next run can diff.
 
 **A question you want answered properly**
 `forever-learning`
